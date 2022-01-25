@@ -1,0 +1,1 @@
+import{_ as e}from"./index.a7cc519d.js";import{o as r,p as o}from"./vendor.9b72f3b9.js";const c={};function n(s,t){return r(),o("h1",null,"\u6743\u9650\u7BA1\u7406")}var f=e(c,[["render",n]]);export{f as default};
