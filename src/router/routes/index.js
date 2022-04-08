@@ -1,7 +1,20 @@
 import Layout from '@/layout/index.vue'
 import Home from '@/views/dashboard/index.vue'
-import { ChartBar, Dove, Github, HouseDamage, LastfmSquare, Link, TimesCircle } from '@vicons/fa'
-
+import {
+  ChartBar,
+  Calculator,
+  UserAltSlash,
+  Dove,
+  Github,
+  HouseDamage,
+  LastfmSquare,
+  Link,
+  TimesCircle,
+} from '@vicons/fa'
+import { IosSettings } from '@vicons/ionicons4'
+import { Person } from '@vicons/ionicons5'
+import { ManageAccountsFilled } from '@vicons/material'
+import { UserAddOutlined, OrderedListOutlined } from '@vicons/antd'
 export const basicRoutes = [
   {
     name: '404',
@@ -33,7 +46,7 @@ export const basicRoutes = [
   },
 
   {
-    name: 'DASHBOARD',
+    name: '个人中心',
     path: '/',
     component: Layout,
     redirect: '/home',
@@ -47,8 +60,26 @@ export const basicRoutes = [
         path: 'home',
         component: Home,
         meta: {
-          title: '首页',
+          title: '项目总览',
           icon: HouseDamage,
+        },
+      },
+      {
+        name: 'user_info',
+        path: 'user_info',
+        component: Home,
+        meta: {
+          title: '个人资料',
+          icon: Person,
+        },
+      },
+      {
+        name: 'modify_pwd',
+        path: 'modify_pwd',
+        component: Home,
+        meta: {
+          title: '修改密码',
+          icon: IosSettings,
         },
       },
     ],
@@ -60,7 +91,7 @@ export const basicRoutes = [
     component: Layout,
     redirect: '/test/unocss',
     meta: {
-      title: '基础功能测试',
+      title: '项目管理',
     },
     children: [
       {
@@ -76,7 +107,7 @@ export const basicRoutes = [
         path: 'message',
         component: () => import('@/views/test-page/TestMessage.vue'),
         meta: {
-          title: '测试Message',
+          title: '新建项目',
         },
       },
       {
@@ -84,7 +115,7 @@ export const basicRoutes = [
         path: 'dialog',
         component: () => import('@/views/test-page/TestDialog.vue'),
         meta: {
-          title: '测试Dialog',
+          title: '项目列表',
         },
       },
       {
@@ -105,8 +136,8 @@ export const basicRoutes = [
     component: Layout,
     redirect: '/error-page/404',
     meta: {
-      title: '错误页',
-      icon: TimesCircle,
+      title: '数据统计',
+      icon: Calculator,
     },
     children: [
       {
@@ -114,7 +145,8 @@ export const basicRoutes = [
         path: '404',
         component: () => import('@/views/error-page/404.vue'),
         meta: {
-          title: '404',
+          title: '用户积分排名',
+          icon: OrderedListOutlined,
         },
       },
     ],
@@ -125,24 +157,24 @@ export const basicRoutes = [
     path: '/external-link',
     component: Layout,
     meta: {
-      title: '外部链接',
-      icon: Link,
+      title: '用户管理',
+      icon: ManageAccountsFilled,
     },
     children: [
       {
         name: 'LINK-GITHUB-SRC',
         path: 'https://github.com/zclzone/vue-naive-admin',
         meta: {
-          title: '源码 - github',
-          icon: Github,
+          title: '添加用户',
+          icon: UserAddOutlined,
         },
       },
       {
         name: 'LINK-GITEE-SRC',
         path: 'https://gitee.com/zclzone/vue-naive-admin',
         meta: {
-          title: '源码 - gitee',
-          icon: LastfmSquare,
+          title: '删除/禁用用户',
+          icon: UserAltSlash,
         },
       },
       {
