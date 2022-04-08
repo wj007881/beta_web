@@ -1,5 +1,5 @@
-git add .
+cmd /c git add .
  
-git commit -m "daily auto save"
+cmd /c git commit -m "daily auto save"
  
-git push -u origin master
+cmd /c git push -u origin master
