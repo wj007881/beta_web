@@ -41,13 +41,13 @@ export default defineConfig(({ command, mode }) => {
       outDir: OUTPUT_DIR,
       brotliSize: false,
       chunkSizeWarningLimit: 2000,
-      rollupOptions: {
-        output: {
-          entryFileNames: '[name]-[hash].[ext]',
-          chunkFileNames: '[name]-[hash].[ext]',
-          assetFileNames: '[ext]/[name]-[hash][ext]',
-        },
-      },
+      // rollupOptions: {
+      //   output: {
+      //     entryFileNames: '[name]-[hash].[ext]',
+      //     chunkFileNames: '[name]-[hash].[ext]',
+      //     assetFileNames: '[ext]/[name]-[hash][ext]',
+      //   },
+      // },
     },
   }
 })
