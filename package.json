@@ -15,12 +15,16 @@
     "@vicons/fa": "^0.11.0",
     "@vicons/ionicons5": "^0.12.0",
     "@vicons/material": "^0.12.0",
+    "@vue/babel-helper-vue-jsx-merge-props": "^1.2.1",
+    "@vue/babel-plugin-transform-vue-jsx": "^1.2.1",
+    "@vue/babel-preset-jsx": "^1.2.4",
     "axios": "^0.21.4",
     "dayjs": "^1.11.0",
     "lodash-es": "^4.17.21",
     "md-editor-v3": "^1.11.4",
     "mockjs": "^1.1.0",
     "pinia": "^2.0.13",
+    "ts-standard": "^11.0.0",
     "vue": "^3.2.31",
     "vue-router": "^4.0.14"
   },
@@ -31,6 +35,7 @@
     "@vicons/ionicons4": "^0.12.0",
     "@vitejs/plugin-vue": "^1.10.2",
     "@vue/compiler-sfc": "^3.2.31",
+    "babel-preset-vue-app": "^2.0.0",
     "chalk": "^5.0.1",
     "dotenv": "^10.0.0",
     "eslint": "^8.12.0",
@@ -48,5 +53,37 @@
     "vite-plugin-html": "^2.1.2",
     "vite-plugin-mock": "^2.9.6",
     "vite-plugin-vue-setup-extend": "^0.3.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint",
+      "ecmaFeatures": {
+        "legacyDecorators": true
+      }
+    },
+    "rules": {
+      "no-": "off",
+      "no-debugger": "off",
+      "no-console": "off",
+      "no-empty": "off",
+      "no-unused-vars": "off",
+      "vue/no-unused-vars": "off",
+      "vue/valid-v-on": "off",
+      "x-invalid-end-tag": "off",
+      "vue/require-v-for-key": "off",
+      "vue/no-parsing-error": "off",
+      "vue/valid-v-for": "off",
+      "vue/no-use-v-if-with-v-for": "off",
+      "vue/valid-template-root": "off",
+      "vue/no-async-promise-executor": "off"
+    }
   }
 }

@@ -28,6 +28,12 @@
         </template>
         <div class="card-list">
           <n-card v-for="i in 10" :key="i" title="Vue Naive Admin" size="small">
+            <template #cover>
+              <img
+                src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                style="max-width: 300px; max-height: 150px"
+              />
+            </template>
             <p op60>一个基于 Vue3.0、Vite、Naive UI 的轻量级后台管理模板</p>
           </n-card>
           <div class="blank"></div>

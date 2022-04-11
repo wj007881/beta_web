@@ -67,7 +67,7 @@ export const basicRoutes = [
       {
         name: 'user_info',
         path: 'user_info',
-        component: Home,
+        component: () => import('@/views/dashboard/userInfo.vue'),
         meta: {
           title: '个人资料',
           icon: Person,
