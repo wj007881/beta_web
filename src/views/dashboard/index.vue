@@ -24,7 +24,7 @@
     <div p15 flex>
       <n-card title="项目" size="small" :segmented="true">
         <template #header-extra>
-          <n-button text type="primary">更多</n-button>
+          <n-button text type="primary" @click="router.push('/project/project_list')">更多</n-button>
         </template>
         <div class="card-list">
           <n-card v-for="i in 10" :key="i" title="Vue Naive Admin" size="small">
@@ -48,7 +48,10 @@
 
 <script setup>
 import { useUserStore } from '@/store/modules/user'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
+// const permissionStore = usePermissionStore()
+// const { currentRoute } = router
 const userStore = useUserStore()
 </script>
 

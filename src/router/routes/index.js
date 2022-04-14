@@ -76,7 +76,7 @@ export const basicRoutes = [
       {
         name: 'modify_pwd',
         path: 'modify_pwd',
-        component: Home,
+        component: () => import('@/views/dashboard/user_pwd.vue'),
         meta: {
           title: '修改密码',
           icon: IosSettings,
@@ -86,10 +86,10 @@ export const basicRoutes = [
   },
 
   {
-    name: 'TEST',
-    path: '/test',
+    name: 'PROJECT',
+    path: '/project',
     component: Layout,
-    redirect: '/test/unocss',
+    redirect: '/project/new_project',
     meta: {
       title: '项目管理',
     },
@@ -97,23 +97,23 @@ export const basicRoutes = [
       {
         name: 'UNOCSS',
         path: 'unocss',
-        component: () => import('@/views/test-page/TestUnocss.vue'),
+        component: () => import('@/views/project-manage/TestUnocss.vue'),
         meta: {
           title: '测试unocss',
         },
       },
       {
-        name: 'MESSAGE',
-        path: 'message',
-        component: () => import('@/views/test-page/TestMessage.vue'),
+        name: 'NEW-PROJECT',
+        path: 'new_poject',
+        component: () => import('@/views/project-manage/newProject.vue'),
         meta: {
           title: '新建项目',
         },
       },
       {
-        name: 'DIALOG',
-        path: 'dialog',
-        component: () => import('@/views/test-page/TestDialog.vue'),
+        name: 'PROJECT-LIST',
+        path: 'project_list',
+        component: () => import('@/views/project-manage/projectList.vue'),
         meta: {
           title: '项目列表',
         },
@@ -121,7 +121,7 @@ export const basicRoutes = [
       {
         name: 'TEST-KEEP-ALIVE',
         path: 'keep-alive',
-        component: () => import('@/views/test-page/TestKeepAlive.vue'),
+        component: () => import('@/views/project-manage/TestKeepAlive.vue'),
         meta: {
           title: '测试Keep-Alive',
           keepAlive: true,
@@ -153,8 +153,8 @@ export const basicRoutes = [
   },
 
   {
-    name: 'EXTERNAL-LINK',
-    path: '/external-link',
+    name: 'user manage',
+    path: '/user-manage',
     component: Layout,
     meta: {
       title: '用户管理',
@@ -163,7 +163,8 @@ export const basicRoutes = [
     children: [
       {
         name: 'LINK-GITHUB-SRC',
-        path: 'https://github.com/zclzone/vue-naive-admin',
+        path: 'add-user',
+        component: () => import('@/views/user-manage/add-user.vue'),
         meta: {
           title: '添加用户',
           icon: UserAddOutlined,

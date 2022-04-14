@@ -1,78 +1,64 @@
 <template>
   <div>
-    <n-card>
-    <n-space vertical>
-      <div style="margin-left:50px;margin-top:30px;">
-      <p>编辑
-      <n-switch v-model:value="updateDisabled"/>
-      </p>
-    </div>
-    <n-form
-      ref="formRef"
-      :model="model"
-      label-placement="left"
-      :label-width="160"
-      :disabled="!updateDisabled"
-      :style="{
-        maxWidth: '600px'
-      }"
+     <n-card
+      style="width: 100%;height: 100%;"
+      title="修改密码"
+      :bordered="false"
+      size="huge"
+      role="dialog"
+      aria-modal="true"
     >
-    <n-grid embedded  :cols="24" :x-gap="24" content-style="padding: 24px;"></n-grid>
-      <n-form-item label="名字" path="inputValue">
-        <n-input v-show="updateDisabled" v-model:value="model.inputValue" placeholder="请输入名字" />
-        <a v-show="!updateDisabled">{{model.inputValue}}</a>
-      </n-form-item>
-      <n-form-item label="工作地点" path="working_location" >
-        <n-select
-          v-show="updateDisabled"
-          v-model:value="model.working_location"
-          placeholder="请选择工作地点"
-          :options="working_location_options"
-        />
-        <a v-show="!updateDisabled">{{model.working_location}}</a>
-      </n-form-item>
-      <n-form-item label="头像" path="uploadValue">
-        <n-avatar
-        v-show="!updateDisabled"
-          round
-          :size="48"
-          src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-        />
-        <n-upload v-show="updateDisabled">
-          <n-button>Upload file</n-button>
-        </n-upload>
-      </n-form-item>
-      <n-form-item label="email" path="email">
-        <n-auto-complete
-        v-show="updateDisabled"
-          v-model:value="model.email"
-          :options="autoCompleteOptions"
-          placeholder="邮箱"
-        />
-        <a v-show="!updateDisabled">{{model.email}}</a>
-      </n-form-item>
-      
-
-    </n-form>
-
-  <n-form >
-    <n-grid embedded :cols="24" :x-gap="24" content-style="padding: 24px;">
-    <n-form-item-gi :offset="4">
+    <n-form ref="formRef" :model="model" :rules="rules2">
+      <n-grid embedded  :cols="24" :x-gap="24" content-style="padding: 24px;">
+     <n-form-item-gi :offset="2" :span="16" path="password" label="原密码">
+      <n-input
+        v-model:value="model.oldpassword"
+        type="password"
+        @input="handlePasswordInput"
+        @keydown.enter.prevent
+        placeholder="请输入旧密码"
+      />
+    </n-form-item-gi>
+      <n-form-item-gi :offset="2" :span="16" path="newpassword" label="新密码">
+      <n-input
+        v-model:value="model.newpassword"
+        type="password"
+        @input="handlePasswordInput"
+        placeholder="请输入新密码"
+        @keydown.enter.prevent
+      />
+    </n-form-item-gi>
+    <n-form-item-gi
+      ref="rPasswordFormItemRef"
+      :offset="2"
+      :span="16"
+      first
+      path="reenteredPassword"
+      label="重复密码"
+    >
+      <n-input
+        v-model:value="model.reenteredPassword"
+        :disabled="!model.newpassword"
+        type="password"
+        @keydown.enter.prevent
+        placeholder="请再次输入新密码"
+      />
+    </n-form-item-gi>
+    <n-form-item-gi :offset="8">
           <n-button
-            :disabled="!updateDisabled"
+            :disabled="model.newpassword === null"
             round
             type="primary"
-            @click="comfirmModify"
+            @click="handleValidateButtonClick"
           >
             确定修改
           </n-button>
     </n-form-item-gi>
     </n-grid>
-  </n-form>
-  </n-space>
+    </n-form>
+    </n-card>
 
     
-  </n-card>
   </div>
 </template>
 
@@ -90,10 +76,9 @@ export default defineComponent({
     const showModal = ref(false);
     const message = useMessage();
     const dialog = useDialog();
-    const updateDisabled=ref(true);
-    const optionsRef = ref([]);
-    const loadingRef = ref(false);
-    const model=ref(null)
+    const updateDisabled=ref(false)
+    const optionsRef = ref([])
+    const loadingRef = ref(false)
     const userModelRef = ref({
       id:0,
       username:null,
@@ -109,6 +94,12 @@ export default defineComponent({
       user_state:true,
       beta_count:null,
     });
+    function validatePasswordStartWith(rule, value) {
+      return !!userModelRef.value.newpassword && userModelRef.value.newpassword.startsWith(value) && userModelRef.value.newpassword.length >= value.length;
+    }
+    function validatePasswordSame(rule, value) {
+      return value === userModelRef.value.newpassword;
+    }
     const rules = {
       age: [
         {
@@ -157,13 +148,6 @@ export default defineComponent({
         }
       ]
     };
-    function validatePasswordStartWith(rule, value) {
-      return !!userModelRef.value.newpassword && userModelRef.value.newpassword.startsWith(value) && userModelRef.value.newpassword.length >= value.length;
-    }
-    function validatePasswordSame(rule, value) {
-      return value === userModelRef.value.newpassword;
-    }
-    
     return {
       formRef,
       rPasswordFormItemRef,
@@ -173,7 +157,7 @@ export default defineComponent({
       rules2,
       loading:loadingRef,
       options:optionsRef,
-      updateDisabled: ref(false),
+      updateDisabled: ref(true),
       working_location_options: ["上海", "北京", "深圳", "武汉"].map((v) => ({
         label: v,
         value: v

@@ -1,0 +1,180 @@
+<template>
+  <div>
+    <n-card>
+   <n-data-table :columns="columns" :data="data"  />
+
+    <n-form ref="formRef" :model="model" :rules="rules2">
+    <n-grid embedded :cols="24" :x-gap="24" content-style="padding: 24px;">
+    <n-form-item-gi :offset="6">
+          <n-button
+            
+            round
+            type="primary"
+            @click="add_line"
+          >
+            添加一行
+          </n-button>
+          
+    </n-form-item-gi>
+    <n-form-item-gi :offset="6">
+          <n-button
+            
+            round
+            type="primary"
+            @click="add_line"
+          >
+            确定添加用户
+          </n-button>
+          
+    </n-form-item-gi>
+    </n-grid>
+  </n-form>
+  </n-card>
+  </div>
+</template>
+
+<script>
+import { h, defineComponent, ref,computed } from 'vue'
+import { NInput,NSelect,NAutoComplete } from 'naive-ui'
+
+const createData = () => [
+  {
+    key: 0,
+    name: 'John Brown',
+    // age: '32',
+    working_location: '上海',
+    is_pm:'',
+    email:''
+
+  },
+  
+]
+const working_location_options= ["上海", "北京", "深圳", "武汉"].map((v) => ({
+        label: v,
+        value: v
+      }))
+const email_back_options= ['@gmail.com', '@163.com', '@qq.com', '@lenovo.com'].map((v) => ({
+        label: v,
+        value: v
+      }))
+export default defineComponent({
+  setup () {
+    const data = ref(createData())
+    return {
+      data: data,
+      columns: [
+        {
+          title: '名字',
+          key: 'name',
+          render (row, index) {
+            return h(NInput, {
+              value: row.name,
+              placeholder:"请输入名字",
+              onUpdateValue (v) {
+                data.value[index].name = v
+              }
+            })
+          }
+        },
+        {
+          title: '工作地点',
+          key: 'working_location',
+          render (row, index) {
+            return h(NSelect, {
+              value: row.working_location,
+              options:working_location_options,
+              placeholder:'',
+              onUpdateValue (v) {
+                data.value[index].working_location = v
+              }
+            })
+          }
+        },
+        {
+          title: 'Email',
+          key: 'email',
+          render (row, index) {
+            return ('div',{},[
+              h(NInput, {
+              value: row.email_front,
+              style:'width:70%;float:left',
+              placeholder:"请输入邮箱,无需后缀",
+              onUpdateValue (v) {
+                data.value[index].email = v
+              }
+            }),
+            h(NSelect,{
+              value: row.email_back,
+              style:'width:30%;max-width:30%;float:right',
+              placeholder:'',
+              options:email_back_options,
+              onUpdateValue (v) {
+                data.value[index].email_back = v
+              }
+            })
+            ])
+
+          }
+        },
+        {
+          title: '是否PM',
+          key: 'is_pm',
+          render (row, index) {
+            return h(NSelect, {
+              value: row.is_pm,
+              placeholder:'',
+              options:[{
+                  label: '是',
+                  value: 'yes'
+                },
+                {
+                  label: '否',
+                  value: 'no'
+                }],
+              onUpdateValue (v) {
+                data.value[index].is_pm = v
+              }
+            })
+          }
+        }
+      ],
+      pagination: {
+        pageSize: 10
+      },
+      add_line(){
+        data.value.push({
+          key: null,
+          name: null,
+          // age: null,
+          working_location: null,
+          is_pm:null,
+          email:null
+        })
+      },
+    }
+  }
+})
+</script>
+<style lang="scss" scoped>
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  .n-card {
+    width: 300px;
+    flex-shrink: 0;
+    margin: 10px 0;
+    cursor: pointer;
+    &:hover {
+      box-shadow: 0 1px 2px -2px #00000029, 0 3px 6px #0000001f, 0 5px 12px 4px #00000017;
+    }
+  }
+  .blank {
+    width: 300px;
+    height: 0;
+  }
+  .from_class {
+    margin: 10px;
+  }
+}
+</style>
