@@ -50,8 +50,6 @@
 import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
 const router = useRouter()
-// const permissionStore = usePermissionStore()
-// const { currentRoute } = router
 const userStore = useUserStore()
 </script>
 

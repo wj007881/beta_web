@@ -40,9 +40,9 @@ import { NInput,NSelect,NAutoComplete } from 'naive-ui'
 const createData = () => [
   {
     key: 0,
-    name: 'John Brown',
+    name: '',
     // age: '32',
-    working_location: '上海',
+    working_location: '',
     is_pm:'',
     email:''
 
@@ -57,6 +57,7 @@ const email_back_options= ['@gmail.com', '@163.com', '@qq.com', '@lenovo.com'].m
         label: v,
         value: v
       }))
+
 export default defineComponent({
   setup () {
     const data = ref(createData())
@@ -84,6 +85,7 @@ export default defineComponent({
               value: row.working_location,
               options:working_location_options,
               placeholder:'',
+              value:'深圳',
               onUpdateValue (v) {
                 data.value[index].working_location = v
               }
@@ -107,6 +109,7 @@ export default defineComponent({
               value: row.email_back,
               style:'width:30%;max-width:30%;float:right',
               placeholder:'',
+              value:'@lenovo.com',
               options:email_back_options,
               onUpdateValue (v) {
                 data.value[index].email_back = v
@@ -122,6 +125,7 @@ export default defineComponent({
           render (row, index) {
             return h(NSelect, {
               value: row.is_pm,
+              value:'是',
               placeholder:'',
               options:[{
                   label: '是',
