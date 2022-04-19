@@ -1,5 +1,18 @@
 import Layout from '@/layout/index.vue'
-
+import {
+  ChartBar,
+  Calculator,
+  UserAltSlash,
+  Dove,
+  Github,
+  HouseDamage,
+  LastfmSquare,
+  Link,
+  TimesCircle,
+} from '@vicons/fa'
+import { Person } from '@vicons/ionicons5'
+import { ManageAccountsFilled } from '@vicons/material'
+import { UserAddOutlined, OrderedListOutlined } from '@vicons/antd'
 export default [
   {
     name: 'EXAMPLE',
@@ -40,6 +53,46 @@ export default [
             },
           },
         ],
+      },
+    ],
+  },
+  {
+    name: 'user manage',
+    path: '/user-manage',
+    component: Layout,
+    meta: {
+      title: '用户管理',
+      icon: ManageAccountsFilled,
+      role:['admin']
+    },
+    children: [
+      {
+        name: 'add-user',
+        path: '/add-user',
+        component: () => import('@/views/user-manage/add-user.vue'),
+        meta: {
+          title: '添加用户',
+          icon: UserAddOutlined,
+          role: ['admin'],
+        },
+      },
+      {
+        name: 'del-user',
+        path: '/del-user',
+        meta: {
+          title: '删除/禁用用户',
+          icon: UserAltSlash,
+          role: ['admin'],
+        },
+      },
+      {
+        name: 'LINK-DOCS',
+        path: 'https://zclzone.github.io/vue-naive-admin-docs',
+        meta: {
+          title: '文档 - vuepress',
+          icon: LastfmSquare,
+          role: ['admin'],
+        },
       },
     ],
   },

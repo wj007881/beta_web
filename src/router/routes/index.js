@@ -152,42 +152,6 @@ export const basicRoutes = [
     ],
   },
 
-  {
-    name: 'user manage',
-    path: '/user-manage',
-    component: Layout,
-    meta: {
-      title: '用户管理',
-      icon: ManageAccountsFilled,
-    },
-    children: [
-      {
-        name: 'LINK-GITHUB-SRC',
-        path: 'add-user',
-        component: () => import('@/views/user-manage/add-user.vue'),
-        meta: {
-          title: '添加用户',
-          icon: UserAddOutlined,
-        },
-      },
-      {
-        name: 'LINK-GITEE-SRC',
-        path: 'https://gitee.com/zclzone/vue-naive-admin',
-        meta: {
-          title: '删除/禁用用户',
-          icon: UserAltSlash,
-        },
-      },
-      {
-        name: 'LINK-DOCS',
-        path: 'https://zclzone.github.io/vue-naive-admin-docs',
-        meta: {
-          title: '文档 - vuepress',
-          icon: LastfmSquare,
-        },
-      },
-    ],
-  },
 ]
 
 export const NOT_FOUND_ROUTE = {

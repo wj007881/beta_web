@@ -13,15 +13,15 @@ import { useRouter } from 'vue-router'
 import { resetRouter } from '@/router'
 import { usePermissionStore } from '@/store/modules/permission'
 import { NOT_FOUND_ROUTE } from '@/router/routes'
-
+// import axios from 'axios'
 const userStore = useUserStore()
 const router = useRouter()
 
 const options = [
-  {
-    label: '切换角色',
-    key: 'switchRole',
-  },
+  // {
+  //   label: '切换角色',
+  //   key: 'switchRole',
+  // },
   {
     label: '退出登录',
     key: 'logout',
@@ -42,33 +42,17 @@ function logout() {
   router.push({ path: '/login' })
 }
 
-function switchRole() {
+async function switchRole() {
   const permissionStore = usePermissionStore()
 
-  const users = [
-    {
-      id: 1,
-      name: '大脸怪(admin)',
-      avatar: 'https://assets.qszone.com/images/avatar.jpg',
-      email: 'Ronnie@123.com',
-      role: ['admin'],
-    },
-    {
-      id: 2,
-      name: '大脸怪(editor)',
-      avatar: 'https://assets.qszone.com/images/avatar.jpg',
-      email: 'Ronnie@123.com',
-      role: ['editor'],
-    },
-    {
-      id: 3,
-      name: '访客(guest)',
-      avatar: 'https://assets.qszone.com/images/avatar.jpg',
-      role: [],
-    },
-  ]
+  
+  let switchUser =await useUserStore.getUserInfo()
 
-  const switchUser = users[+userStore.userId % users.length]
+  
+  // console.log(users['admin']['role'])
+
+  // const switchUser = users[+userStore.userId % users.length]
+  // console.log(switchUser)
   resetRouter()
   userStore.setUserInfo(switchUser)
   const accessRoutes = permissionStore.generateRoutes(switchUser.role)
@@ -78,6 +62,9 @@ function switchRole() {
   router.addRoute(NOT_FOUND_ROUTE)
   $message.success(`${switchUser.name}`)
 }
+beforeMounted:switchRole(()=> {
+  
+})
 </script>
 
 <style lang="scss" scoped>

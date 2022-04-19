@@ -23,9 +23,9 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-    async getUserInfo() {
+    async getUserInfo(id) {
       try {
-        const res = await getUser()
+        const res = await getUser(id)
         if (res.code === 0) {
           const { id, name, avatar, role } = res.data
           this.userInfo = { id, name, avatar, role }
