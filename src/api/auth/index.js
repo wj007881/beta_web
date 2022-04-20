@@ -5,7 +5,10 @@ export const login = (data) => {
   return axios({
     url: 'http://192.168.50.46:3399/get_token',
     method: 'post',
-    data,
+    data:JSON.stringify(data),
+    headers: {
+      "Content-type": "application/json",
+    }
   })
 }
 

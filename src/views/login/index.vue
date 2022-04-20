@@ -106,13 +106,16 @@ async function handleLogin() {
           Reflect.deleteProperty(query, 'redirect')
           router.push({ path, query })
         } else {
+          console.log('跳转首页')
           router.push('/')
         }
       } else {
+        console.log('登录出错')
         $message.warning(res.data.message)
       }
     })
   } catch (error) {
+    console.log('捕获错误')
     $message.error(error.message)
   }
 }

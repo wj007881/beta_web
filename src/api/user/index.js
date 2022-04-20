@@ -19,9 +19,9 @@ export function getUser(id) {
   return axios({
     url: baseURL+"/getUserInfo",
     method: "post",
-    data: {
+    data: JSON.stringify({
       'user_id':id
-    },
+    }),
     headers: {
       "Content-type": "application/json",
     }
