@@ -62,7 +62,7 @@ async function switchRole() {
   router.addRoute(NOT_FOUND_ROUTE)
   $message.success(`${switchUser.name}`)
 }
-beforeMounted:switchRole(()=> {
+onMounted:switchRole(()=> {
   
 })
 </script>

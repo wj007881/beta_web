@@ -68,7 +68,7 @@ export default [
     children: [
       {
         name: 'add-user',
-        path: '/add-user',
+        path: 'add-user',
         component: () => import('@/views/user-manage/add-user.vue'),
         meta: {
           title: '添加用户',
@@ -78,22 +78,24 @@ export default [
       },
       {
         name: 'del-user',
-        path: '/del-user',
+        path: 'del-user',
+        component: () => import('@/views/user-manage/del-user.vue'),
         meta: {
           title: '删除/禁用用户',
           icon: UserAltSlash,
           role: ['admin'],
         },
       },
-      {
-        name: 'LINK-DOCS',
-        path: 'https://zclzone.github.io/vue-naive-admin-docs',
-        meta: {
-          title: '文档 - vuepress',
-          icon: LastfmSquare,
-          role: ['admin'],
-        },
-      },
+      // {
+      //   name: 'LINK-DOCS',
+      //   path: 'https://zclzone.github.io/vue-naive-admin-docs',
+        
+      //   meta: {
+      //     title: '文档 - vuepress',
+      //     icon: LastfmSquare,
+      //     role: ['admin'],
+      //   },
+      // },
     ],
   },
 ]

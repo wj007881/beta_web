@@ -21,7 +21,7 @@
             
             round
             type="primary"
-            @click="add_user()"
+            @click="add_line"
           >
             确定添加用户
           </n-button>
@@ -39,12 +39,12 @@ import { NInput,NSelect,NAutoComplete } from 'naive-ui'
 
 const createData = () => [
   {
-    key: null,
-    name: null,
+    key: 0,
+    name: '',
     // age: '32',
-    working_location: null,
-    is_pm:null,
-    email:null
+    working_location: '',
+    is_pm:'',
+    email:''
 
   },
   
@@ -155,10 +155,6 @@ export default defineComponent({
           email:null
         })
       },
-      add_user(){
-        
-         alert(JSON.stringify(data.value))
-      }
     }
   }
 })
