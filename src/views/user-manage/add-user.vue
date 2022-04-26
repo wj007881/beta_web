@@ -36,7 +36,11 @@
 <script>
 import { h, defineComponent, ref,computed } from 'vue'
 import { NInput,NSelect,NAutoComplete } from 'naive-ui'
-
+// import { defAxios as defaxios} from '@/utils//http'
+import { getToken } from '@/utils/token'
+import axios from 'axios'
+import qs from 'qs'
+const baseURL= VITE_APP_GLOB_BATA_API
 const createData = () => [
   {
     key: null,
@@ -57,7 +61,7 @@ const email_back_options= ['@gmail.com', '@163.com', '@qq.com', '@lenovo.com'].m
         label: v,
         value: v
       }))
-
+// const axios=defAxios()
 export default defineComponent({
   setup () {
     const data = ref(createData())
@@ -156,8 +160,19 @@ export default defineComponent({
         })
       },
       add_user(){
-        
-         alert(JSON.stringify(data.value))
+        const token='JWT '+getToken()
+         axios({
+            url: baseURL+'/getUserInfo',
+            method: 'post',
+            data:qs.stringify(data),
+            headers: {
+              "Content-type": "application/json",
+              "Authorization":token
+            }
+         })
+         .then((res)=>{
+           console.log(res)
+         })
       }
     }
   }

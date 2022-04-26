@@ -2,7 +2,7 @@ import { defAxios as request } from '@/utils/http'
 import axios from 'axios'
 const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 export function getUsers(data = {}) {
-  return request({
+  return axios({
     url: '/users',
     method: 'get',
     data,
@@ -30,14 +30,14 @@ export function getUser(id) {
 
 export function saveUser(data = {}, id) {
   if (id) {
-    return request({
+    return axios({
       url: '/user',
       method: 'put',
       data,
     })
   }
 
-  return request({
+  return axios({
     url: `/user/${id}`,
     method: 'put',
     data,
