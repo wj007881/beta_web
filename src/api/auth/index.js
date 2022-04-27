@@ -1,9 +1,9 @@
 import { defAxios as request } from '@/utils/http'
-const baseurl = import.meta.env.VITE_REQUSET_BASE_URL
+const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 import axios from 'axios'
 export const login = (data) => {
   return axios({
-    url: 'http://192.168.50.46:3399/get_token',
+    url: baseURL+'/get_token',
     method: 'post',
     data:JSON.stringify(data),
     headers: {

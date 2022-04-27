@@ -40,7 +40,7 @@ import { NInput,NSelect,NAutoComplete } from 'naive-ui'
 import { getToken } from '@/utils/token'
 import axios from 'axios'
 import qs from 'qs'
-const baseURL= VITE_APP_GLOB_BATA_API
+const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 const createData = () => [
   {
     key: null,
@@ -146,7 +146,7 @@ export default defineComponent({
           }
         }
       ],
-      pagination: {
+      pagination:{ 
         pageSize: 10
       },
       add_line(){
@@ -161,14 +161,17 @@ export default defineComponent({
       },
       add_user(){
         const token='JWT '+getToken()
-         axios({
+        const instance=axios.create()
+         instance({
+            // url: 'http://192.168.50.46:5000/flask_test',
             url: baseURL+'/getUserInfo',
             method: 'post',
-            data:qs.stringify(data),
+            data:{'user':'user'},
             headers: {
-              "Content-type": "application/json",
+              "Content-type":"application/json",
               "Authorization":token
             }
+          
          })
          .then((res)=>{
            console.log(res)
