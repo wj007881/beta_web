@@ -11,7 +11,9 @@ export function getToken() {
 }
 
 export function setToken(token) {
+  // console.log('set token')
   lsToken.set(TOKEN_CODE, token, DURATION)
+  // console.log(lsToken.get(TOKEN_CODE))
 }
 
 export function removeToken() {

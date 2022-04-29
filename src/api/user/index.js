@@ -1,4 +1,5 @@
 import { defAxios as request } from '@/utils/http'
+import { getToken } from '@/utils/token'
 import axios from 'axios'
 const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 export function getUsers(data = {}) {
@@ -16,14 +17,16 @@ export function getUser(id) {
   //     method: 'get',
   //   })
   // }
+  console.log('getUser')
   return axios({
     url: baseURL+"/getUserInfo",
     method: "post",
-    data: JSON.stringify({
-      'user_id':id
-    }),
+    data: {
+      'user_id':1
+    },
     headers: {
       "Content-type": "application/json",
+      "Authorization":"JWT "+getToken()
     }
     })
 }

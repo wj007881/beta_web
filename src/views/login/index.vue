@@ -99,7 +99,8 @@ async function handleLogin() {
       console.log(res)
       if (res.data.code === 200) {
         $message.success('登录成功')
-        ls.set('loginInfo', { username, password })
+        let token=res.data.token
+        ls.set('loginInfo', { username, password})
         setToken(res.data.token)
         if (query.redirect) {
           const path = query.redirect

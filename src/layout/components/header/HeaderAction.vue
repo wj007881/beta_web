@@ -43,10 +43,12 @@ function logout() {
 }
 
 async function switchRole() {
+
   const permissionStore = usePermissionStore()
 
-  
-  let switchUser =await useUserStore.getUserInfo()
+  const id=userStore.userInfo.id
+
+  let switchUser =await userStore.getUserInfo(id)
 
   
   // console.log(users['admin']['role'])
