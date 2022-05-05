@@ -25,7 +25,14 @@
           >
             确定添加用户
           </n-button>
-          
+          <n-button
+            
+            round
+            type="primary"
+            @click="out_put_userInfo()"
+          >
+            Test
+          </n-button>
     </n-form-item-gi>
     </n-grid>
   </n-form>
@@ -39,8 +46,9 @@ import { NInput,NSelect,NAutoComplete } from 'naive-ui'
 // import { defAxios as defaxios} from '@/utils//http'
 import { getToken } from '@/utils/token'
 import axios from 'axios'
-import qs from 'qs'
+import { useUserStore } from '@/store/modules/user'
 const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
+const userStore=useUserStore()
 const createData = () => [
   {
     key: null,
@@ -176,6 +184,13 @@ export default defineComponent({
          .then((res)=>{
            console.log(res)
          })
+      },
+      out_put_userInfo(){
+        const name=userStore.name
+        const role=userStore.role
+        const username = userStore.username
+        const userID = userStore.userId
+        console.log(name,role,username,userID)
       }
     }
   }

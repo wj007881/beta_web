@@ -19,7 +19,8 @@ export function createPermissionGuard(router) {
           next()
         } else {
           try {
-            await userStore.getUserInfo()
+            // console.log(userStore.userId)
+            await userStore.getUserInfo(1)
             const accessRoutes = permissionStore.generateRoutes(userStore.role)
             accessRoutes.forEach((route) => {
               !router.hasRoute(route.name) && router.addRoute(route)

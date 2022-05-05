@@ -43,11 +43,11 @@ function logout() {
 }
 
 async function switchRole() {
-
+  
   const permissionStore = usePermissionStore()
 
-  const id=userStore.userInfo.id
-
+  const id=userStore.userId
+  console.log(id,'header')
   let switchUser =await userStore.getUserInfo(id)
 
   

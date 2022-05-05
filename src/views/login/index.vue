@@ -68,7 +68,7 @@ import { useRouter } from 'vue-router'
 
 import { login } from '@/api/auth'
 import { createLocalStorage } from '@/utils/cache'
-import { setToken } from '@/utils/token'
+import { setToken,setUserID } from '@/utils/token'
 
 const title = import.meta.env.VITE_APP_TITLE
 
@@ -78,6 +78,7 @@ const query = unref(router.currentRoute).query
 const loginInfo = ref({
   username: 'admin',
   password: 123456,
+  userID:1
 })
 
 const ls = createLocalStorage({ prefixKey: 'login_' })
@@ -85,6 +86,7 @@ const lsLoginInfo = ls.get('loginInfo')
 if (lsLoginInfo) {
   loginInfo.value.username = lsLoginInfo.username || ''
   loginInfo.value.password = lsLoginInfo.password || ''
+  loginInfo.value.userID = lsLoginInfo.userID || ''
 }
 
 async function handleLogin() {
@@ -99,9 +101,11 @@ async function handleLogin() {
       console.log(res)
       if (res.data.code === 200) {
         $message.success('登录成功')
-        let token=res.data.token
-        ls.set('loginInfo', { username, password})
+        // let token=res.data.token
+        let userID=res.data.id
+        ls.set('loginInfo', { username, password, userID})
         setToken(res.data.token)
+        setUserID(res.data.id)
         if (query.redirect) {
           const path = query.redirect
           Reflect.deleteProperty(query, 'redirect')

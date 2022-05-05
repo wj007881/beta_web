@@ -15,6 +15,9 @@ export const useUserStore = defineStore('user', {
     name() {
       return this.userInfo?.name
     },
+    username() {
+      return this.userInfo?.username
+    },
     avatar() {
       return this.userInfo?.avatar
     },
@@ -23,13 +26,14 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-    async getUserInfo(id) {
+    async getUserInfo() {
+      // console.log(id,'userjs')
       try {
-        const res = await getUser(id)
+        const res = await getUser()
         console.log(res.data)
         if (res.data.code === 200) {
-          const { id, name, avatar, role } = res.data
-          this.userInfo = { id, name, avatar, role }
+          const { id,username, name, avatar, role } = res.data
+          this.userInfo = { id, username, name, avatar, role }
           console.log('get userinfo success')
           return Promise.resolve(res.data)
         } else {
