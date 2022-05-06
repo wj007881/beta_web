@@ -37,18 +37,26 @@
     </n-grid>
   </n-form>
   </n-card>
+  <!-- http://localhost:3399/post_avatar -->
+  <n-upload
+    action=upload_url
+    @before-upload="beforeUpload"
+  >
+    <n-button>上传文件</n-button>
+  </n-upload>
   </div>
 </template>
 
 <script>
 import { h, defineComponent, ref,computed } from 'vue'
-import { NInput,NSelect,NAutoComplete } from 'naive-ui'
+import { NInput,NSelect,NAutoComplete,useMessage } from 'naive-ui'
 // import { defAxios as defaxios} from '@/utils//http'
 import { getToken } from '@/utils/token'
 import axios from 'axios'
 import { useUserStore } from '@/store/modules/user'
-const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
-const userStore=useUserStore()
+import { ArchiveOutline as ArchiveIcon } from '@vicons/ionicons5'
+
+
 const createData = () => [
   {
     key: null,
@@ -73,6 +81,10 @@ const email_back_options= ['@gmail.com', '@163.com', '@qq.com', '@lenovo.com'].m
 export default defineComponent({
   setup () {
     const data = ref(createData())
+    const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
+    const userStore=useUserStore()
+    const message=useMessage()
+    const upload_url=baseURL+':3399/post_avatar'
     return {
       data: data,
       columns: [
@@ -167,6 +179,9 @@ export default defineComponent({
           email:null
         })
       },
+      upload_url(){
+        return upload_url
+      },
       add_user(){
         const token='JWT '+getToken()
         const instance=axios.create()
@@ -191,6 +206,13 @@ export default defineComponent({
         const username = userStore.username
         const userID = userStore.userId
         console.log(name,role,username,userID)
+      },
+      async beforeUpload (data){
+        if (data.file.file?.type !== 'image/png') {
+          message.error('只能上传png格式的图片文件，请重新上传')
+          return false
+        }
+        return true
       }
     }
   }
