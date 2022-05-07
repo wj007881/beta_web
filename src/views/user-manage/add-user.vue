@@ -62,10 +62,11 @@ const createData = () => [
     key: null,
     name: null,
     // age: '32',
-    working_location: null,
-    is_pm:null,
-    email:null
-
+    working_location: '深圳',
+    is_pm:true,
+    email:null,
+    create_state:false,
+    error_msg:''
   },
   
 ]
@@ -173,10 +174,10 @@ export default defineComponent({
         data.value.push({
           key: null,
           name: null,
-          // age: null,
           working_location: null,
           is_pm:null,
-          email:null
+          email:null,
+          create_state:false
         })
       },
       upload_url(){
@@ -184,21 +185,45 @@ export default defineComponent({
       },
       add_user(){
         const token='JWT '+getToken()
-        const instance=axios.create()
-         instance({
-            // url: 'http://192.168.50.46:5000/flask_test',
-            url: baseURL+'/getUserInfo',
+        // const instance=axios.create()
+
+        //  instance({
+        //     // url: 'http://192.168.50.46:5000/flask_test',
+        //     url: baseURL+'/getUserInfo',
+        //     method: 'post',
+        //     data:{'user':'user'},
+        //     headers: {
+        //       "Content-type":"application/json",
+        //       "Authorization":token
+        //     }
+          
+        //  })
+        //  .then((res)=>{
+        //    console.log(res)
+        //  })
+        for (let i=0;i<data.value.length;i++){
+          axios({
+            //  url: 'http://192.168.50.46:5000/flask_test',
+            url: baseURL+'/add_user',
             method: 'post',
-            data:{'user':'user'},
+            data:data.value[i],
             headers: {
               "Content-type":"application/json",
               "Authorization":token
             }
-          
-         })
-         .then((res)=>{
-           console.log(res)
-         })
+          })
+          .then((res)=>{
+            if(res.data.code==200){
+              data.value[i].create_state=true
+            }
+            else{
+              data.value[i].create_state=false
+              data.value[i].error_msg=res.data.msg
+            }
+          })
+          .catch(()=>{})
+
+        }
       },
       out_put_userInfo(){
         const name=userStore.name
