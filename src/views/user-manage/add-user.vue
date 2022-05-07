@@ -1,5 +1,8 @@
 <template>
   <div>
+    <n-loading-bar-provider>
+
+
     <n-card>
    <n-data-table :columns="columns" :data="data"  />
 
@@ -29,7 +32,7 @@
             
             round
             type="primary"
-            @click="out_put_userInfo()"
+            @click="upload_action()"
           >
             Test
           </n-button>
@@ -39,17 +42,18 @@
   </n-card>
   <!-- http://localhost:3399/post_avatar -->
   <n-upload
-    action=upload_url
+    :action="upload_url"
     @before-upload="beforeUpload"
   >
     <n-button>上传文件</n-button>
   </n-upload>
+  </n-loading-bar-provider>
   </div>
 </template>
 
 <script>
 import { h, defineComponent, ref,computed } from 'vue'
-import { NInput,NSelect,NAutoComplete,useMessage } from 'naive-ui'
+import { NInput,NSelect,NAutoComplete,useMessage,useLoadingBar } from 'naive-ui'
 // import { defAxios as defaxios} from '@/utils//http'
 import { getToken } from '@/utils/token'
 import axios from 'axios'
@@ -85,9 +89,11 @@ export default defineComponent({
     const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
     const userStore=useUserStore()
     const message=useMessage()
-    const upload_url=baseURL+':3399/post_avatar'
+    const loadingBar = useLoadingBar()
+    const upload_url=baseURL+'/post_avatar'
     return {
       data: data,
+      upload_url:upload_url,
       columns: [
         {
           title: '名字',
@@ -180,8 +186,11 @@ export default defineComponent({
           create_state:false
         })
       },
-      upload_url(){
-        return upload_url
+      upload_action(){
+        loadingBar.start()
+        setTimeout(()=>{
+          loadingBar.finish()
+        },20000)
       },
       add_user(){
         const token='JWT '+getToken()
@@ -201,6 +210,7 @@ export default defineComponent({
         //  .then((res)=>{
         //    console.log(res)
         //  })
+        loadingBar.start()
         for (let i=0;i<data.value.length;i++){
           axios({
             //  url: 'http://192.168.50.46:5000/flask_test',
