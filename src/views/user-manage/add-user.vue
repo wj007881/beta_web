@@ -6,7 +6,7 @@
     <n-card>
    <n-data-table :columns="columns" :data="data"  />
 
-    <n-form ref="formRef" :model="model" :rules="rules2">
+    <n-form ref="formRef" inline :model="model">
     <n-grid embedded :cols="24" :x-gap="24" content-style="padding: 24px;">
     <n-form-item-gi :offset="6">
           <n-button
@@ -21,56 +21,52 @@
     </n-form-item-gi>
     <n-form-item-gi :offset="6">
           <n-button
-            
             round
             type="primary"
             @click="add_user()"
           >
             确定添加用户
           </n-button>
-          <n-button
+          <!-- <n-button
             
             round
             type="primary"
             @click="upload_action()"
           >
             Test
-          </n-button>
+          </n-button> -->
     </n-form-item-gi>
     </n-grid>
   </n-form>
   </n-card>
-  <!-- http://localhost:3399/post_avatar -->
-  <n-upload
-    :action="upload_url"
-    @before-upload="beforeUpload"
-  >
-    <n-button>上传文件</n-button>
-  </n-upload>
+
   </n-loading-bar-provider>
   </div>
 </template>
 
-<script>
+<script >
 import { h, defineComponent, ref,computed } from 'vue'
-import { NInput,NSelect,NAutoComplete,useMessage,useLoadingBar } from 'naive-ui'
+import { NInput,NSelect,NIcon,NButton,useMessage,useLoadingBar,useDialog } from 'naive-ui'
 // import { defAxios as defaxios} from '@/utils//http'
-import { getToken } from '@/utils/token'
+import { getToken,getUserID } from '@/utils/token'
 import axios from 'axios'
 import { useUserStore } from '@/store/modules/user'
 import { ArchiveOutline as ArchiveIcon } from '@vicons/ionicons5'
-
+import { isNull } from '@/utils/is'
+import { stringify } from 'json5'
+import { getUser } from '@/api/user'
+import { Delete16Regular } from '@vicons/fluent'
 
 const createData = () => [
   {
-    key: null,
     name: null,
     // age: '32',
     working_location: '深圳',
-    is_pm:true,
-    email:null,
+    is_pm:"否",
+    email:'',
     create_state:false,
-    error_msg:''
+    error_msg:'',
+    create_user:getUserID()
   },
   
 ]
@@ -82,7 +78,9 @@ const email_back_options= ['@gmail.com', '@163.com', '@qq.com', '@lenovo.com'].m
         label: v,
         value: v
       }))
-// const axios=defAxios()
+
+
+
 export default defineComponent({
   setup () {
     const data = ref(createData())
@@ -91,6 +89,7 @@ export default defineComponent({
     const message=useMessage()
     const loadingBar = useLoadingBar()
     const upload_url=baseURL+'/post_avatar'
+    const dialog = useDialog();
     return {
       data: data,
       upload_url:upload_url,
@@ -102,6 +101,15 @@ export default defineComponent({
             return h(NInput, {
               value: row.name,
               placeholder:"请输入名字",
+              onBlur(v){
+                if (! data.value[index].name) {
+                  message.error("第"+stringify(index+1)+"行名字不能为空");
+                } else if ( data.value[index].name.length > 7) {
+                  message.error("第"+stringify(index+1)+"行名字最多为七个字符");
+                } else if ( data.value[index].name.length < 2) {
+                  message.error("第"+stringify(index+1)+"行名字最少需要两个字符");
+                }
+              },
               onUpdateValue (v) {
                 data.value[index].name = v
               }
@@ -132,6 +140,13 @@ export default defineComponent({
               value: row.email_front,
               style:'width:70%;float:left',
               placeholder:"请输入邮箱,无需后缀",
+              onBlur(v){
+                if (! data.value[index].email) {
+                  message.error("第"+stringify(index+1)+"行邮箱不能为空");
+                } else if ( data.value[index].email.length < 2) {
+                  message.error("第"+stringify(index+1)+"行邮箱最少需要两个字符");
+                }
+              },
               onUpdateValue (v) {
                 data.value[index].email = v
               }
@@ -140,14 +155,13 @@ export default defineComponent({
               value: row.email_back,
               style:'width:30%;max-width:30%;float:right',
               placeholder:'',
-              value:'@lenovo.com',
+              defaultValue:'@lenovo.com',
               options:email_back_options,
               onUpdateValue (v) {
                 data.value[index].email_back = v
               }
             })
             ])
-
           }
         },
         {
@@ -156,34 +170,55 @@ export default defineComponent({
           render (row, index) {
             return h(NSelect, {
               value: row.is_pm,
-              value:'是',
+              defaultValue:false,
               placeholder:'',
               options:[{
                   label: '是',
-                  value: 'yes'
+                  value: true
                 },
                 {
                   label: '否',
-                  value: 'no'
+                  value: false
                 }],
               onUpdateValue (v) {
                 data.value[index].is_pm = v
               }
             })
           }
+        },
+        {
+          title: '',
+          key: 'is_pm',
+          render (row, index) {
+            return h('div',{},[
+              h(NButton,{
+                type:"error",
+                onClick:()=>{
+                  data.value.splice(index,1)
+                }
+                },[
+                h(NIcon,{size:'20px'},[
+                  h(Delete16Regular,{size:'30px'},[])
+                ])
+              ])
+            ])
+              
+            
+          }
         }
       ],
       pagination:{ 
         pageSize: 10
       },
+      // rules:rules,
       add_line(){
         data.value.push({
-          key: null,
           name: null,
           working_location: null,
-          is_pm:null,
+          is_pm:'否',
           email:null,
-          create_state:false
+          create_state:false,
+          create_user:getUserID()
         })
       },
       upload_action(){
@@ -210,8 +245,21 @@ export default defineComponent({
         //  .then((res)=>{
         //    console.log(res)
         //  })
-        loadingBar.start()
+        let add_content=''
         for (let i=0;i<data.value.length;i++){
+          if(isNull(data.value[i].email)&isNull(data.value[i].name)){
+            dialog.error({
+              title: "批量添加出错",
+              content: "请检查第"+stringify(i+1)+"行数据",
+              positiveText: "确定",
+              maskClosable: false,
+              onMaskClick: () => {
+                message.error("请查看原因后点击确认按钮");
+              }
+            })
+            return
+          }
+          loadingBar.start()
           axios({
             //  url: 'http://192.168.50.46:5000/flask_test',
             url: baseURL+'/add_user',
@@ -229,11 +277,29 @@ export default defineComponent({
             else{
               data.value[i].create_state=false
               data.value[i].error_msg=res.data.msg
+              add_content+=res.data.msg+'\n'
+              console.log('error')
             }
           })
           .catch(()=>{})
-
         }
+        if(add_content!=''){
+          dialog.error({
+              title: "批量添加出错",
+              content: add_content,
+              positiveText: "确定",
+              maskClosable: false,
+              onMaskClick: () => {
+                message.error("请查看原因后点击确认按钮");
+              }
+            })
+        }
+        else{
+          setTimeout(()=>{
+            loadingBar.finish()
+            message.success('用户已全部添加，请通知用户登录系统使用')
+          },2000)
+        } 
       },
       out_put_userInfo(){
         const name=userStore.name

@@ -15,7 +15,7 @@ export function createPermissionGuard(router) {
       } else {
         if (userStore.userId) {
           // 已经拿到用户信息
-          refreshAccessToken()
+          // refreshAccessToken()
           next()
         } else {
           try {

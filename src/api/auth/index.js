@@ -13,8 +13,12 @@ export const login = (data) => {
 }
 
 export const refreshToken = () => {
-  return request({
-    url: '/auth/refreshToken',
+  return axios({
+    url: baseURL+'/get_token',
     method: 'post',
+    data:JSON.stringify(data),
+    headers: {
+      "Content-type": "application/json",
+    }
   })
 }

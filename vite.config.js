@@ -5,7 +5,7 @@ import { wrapperEnv } from './build/utils'
 import { createVitePlugins } from './build/vite/plugin'
 import { createProxy } from './build/vite/proxy'
 import { OUTPUT_DIR } from './build/constant'
-
+// import vue from '@vitejs/plugin-vue'
 export default defineConfig(({ command, mode }) => {
   const root = process.cwd()
   const isBuild = command === 'build'
@@ -23,6 +23,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     plugins: createVitePlugins(viteEnv, isBuild),
+    // plugins: [createVitePlugins(viteEnv, isBuild),vue()],
     css: {
       preprocessorOptions: {
         //define global scss variable

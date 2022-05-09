@@ -38,9 +38,14 @@
           :size="48"
           src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
         />
-        <n-upload v-show="updateDisabled">
-          <n-button>Upload file</n-button>
-        </n-upload>
+          <!-- http://localhost:3399/post_avatar -->
+          <n-upload
+            :action="upload_url"
+            @before-upload="beforeUpload"
+            v-show="updateDisabled"
+          >
+            <n-button>上传文件</n-button>
+          </n-upload>
       </n-form-item>
       <n-form-item label="email" path="email">
         <n-auto-complete
@@ -94,6 +99,8 @@ export default defineComponent({
     const optionsRef = ref([]);
     const loadingRef = ref(false);
     const model=ref(null)
+    const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
+    const upload_url=baseURL+'/post_avatar'
     const userModelRef = ref({
       id:0,
       username:null,
@@ -173,6 +180,7 @@ export default defineComponent({
       rules2,
       loading:loadingRef,
       options:optionsRef,
+      upload_url:upload_url,
       updateDisabled: ref(false),
       working_location_options: ["上海", "北京", "深圳", "武汉"].map((v) => ({
         label: v,
@@ -193,6 +201,13 @@ export default defineComponent({
             message.error("验证失败");
           }
         });
+      },
+      async beforeUpload (data){
+        if (data.file.file?.type !== 'image/png') {
+          message.error('只能上传png格式的图片文件，请重新上传')
+          return false
+        }
+        return true
       },
       comfirmModify(){},
       autoCompleteOptions: computed(() => {

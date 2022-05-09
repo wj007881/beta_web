@@ -1,163 +1,143 @@
 <template>
   <div>
     <n-card>
-   <n-data-table :columns="columns" :data="data"  />
+   <n-space vertical :size="12">
+    <n-space>
+      <!-- <n-button @click="filterAddress">
+        Filter Address(Use Value 'London')
+      </n-button>
+      <n-button @click="unfilterAddress">
+        Clear Address Filters
+      </n-button> -->
+      <n-input round clearable :on-input="filterName" :on-clear="unfilterName" placeholder="搜索名字">
+      </n-input>
+      <!-- <n-input round clearable :on-change="filterAddr" :on-clear="clearinput" placeholder="搜索位置">
 
-    <n-form ref="formRef" :model="model" :rules="rules2">
-    <n-grid embedded :cols="24" :x-gap="24" content-style="padding: 24px;">
-    <n-form-item-gi :offset="6">
-          <n-button
-            
-            round
-            type="primary"
-            @click="add_line"
-          >
-            添加一行
-          </n-button>
-          
-    </n-form-item-gi>
-    <n-form-item-gi :offset="6">
-          <n-button
-            
-            round
-            type="primary"
-            @click="add_line"
-          >
-            确定添加用户
-          </n-button>
-          
-    </n-form-item-gi>
-    </n-grid>
-  </n-form>
+      </n-input> -->
+    </n-space>
+    <n-data-table
+      :columns="columns"
+      :data="data"
+      :pagination="pagination"
+      @update:filters="handleUpdateFilter"
+    />
+  </n-space>
   </n-card>
   </div>
 </template>
 
 <script>
-import { h, defineComponent, ref,computed } from 'vue'
-import { NInput,NSelect,NAutoComplete } from 'naive-ui'
+import { defineComponent, reactive } from "vue";
 
-const createData = () => [
+
+const data = [
   {
     key: 0,
-    name: '',
-    // age: '32',
-    working_location: '',
-    is_pm:'',
-    email:'',
-    create_user:''
+    name: "John Brown",
+    age: 32,
+    address: "New York No. 1 Lake Park",
+    state:'able'
   },
-  
-]
-const working_location_options= ["上海", "北京", "深圳", "武汉"].map((v) => ({
-        label: v,
-        value: v
-      }))
-const email_back_options= ['@gmail.com', '@163.com', '@qq.com', '@lenovo.com'].map((v) => ({
-        label: v,
-        value: v
-      }))
+  {
+    key: 1,
+    name: "Jim Green",
+    age: 42,
+    address: "London No. 1 Lake Park",
+    state:'disable'
+  },
+  {
+    key: 2,
+    name: "Joe Black",
+    age: 32,
+    address: "Sidney No. 1 Lake Park",
+    state:'able'
+  },
+  {
+    key: 3,
+    name: "Jim Red",
+    age: 32,
+    address: "London No. 2 Lake Park",
+    state:'disable'
+  }
+];
 
 export default defineComponent({
-  setup () {
-    const data = ref(createData())
-    return {
-      data: data,
-      columns: [
+  setup() {
+    const nameColumn = reactive({
+        title: "Name",
+        key: "name",
+        filterMultiple: false,
+        filterOptionValue: null,
+        sorter(rowA, rowB) {
+          return rowA.name.length - rowB.name.length;
+        },
+        filter(value, row) {
+        return !!~row.name.indexOf(value.toString());
+      }
+      })
+    const addressColumn = reactive({
+      title: "Address",
+      key: "address",
+      filterMultiple: false,
+      filterOptionValue: null,
+      sorter: "default",
+      filter(value, row) {
+        return !!~row.address.indexOf(value.toString());
+      }
+    });
+    const disableColumn=reactive({
+        title: "State",
+        key: "state",
+        filterMultiple: false,
+        filterOptionValue: null,
+        sorter: "default",
+        filterOptions: [
         {
-          title: '名字',
-          key: 'name',
-          render (row, index) {
-            return h(NInput, {
-              value: row.name,
-              placeholder:"请输入名字",
-              onUpdateValue (v) {
-                data.value[index].name = v
-              }
-            })
-          }
+          label: "disable",
+          value: "disable"
         },
         {
-          title: '工作地点',
-          key: 'working_location',
-          render (row, index) {
-            return h(NSelect, {
-              value: row.working_location,
-              options:working_location_options,
-              placeholder:'',
-              value:'深圳',
-              onUpdateValue (v) {
-                data.value[index].working_location = v
-              }
-            })
-          }
-        },
-        {
-          title: 'Email',
-          key: 'email',
-          render (row, index) {
-            return ('div',{},[
-              h(NInput, {
-              value: row.email_front,
-              style:'width:70%;float:left',
-              placeholder:"请输入邮箱,无需后缀",
-              onUpdateValue (v) {
-                data.value[index].email = v
-              }
-            }),
-            h(NSelect,{
-              value: row.email_back,
-              style:'width:30%;max-width:30%;float:right',
-              placeholder:'',
-              value:'@lenovo.com',
-              options:email_back_options,
-              onUpdateValue (v) {
-                data.value[index].email_back = v
-              }
-            })
-            ])
-
-          }
-        },
-        {
-          title: '是否PM',
-          key: 'is_pm',
-          render (row, index) {
-            return h(NSelect, {
-              value: row.is_pm,
-              value:'是',
-              placeholder:'',
-              options:[{
-                  label: '是',
-                  value: 'yes'
-                },
-                {
-                  label: '否',
-                  value: 'no'
-                }],
-              onUpdateValue (v) {
-                data.value[index].is_pm = v
-              }
-            })
-          }
+          label: "able",
+          value: "able"
         }
-      ],
-      pagination: {
-        pageSize: 10
+        ],
+        filter(value, row) {
+          return !!~row.address.indexOf(value.toString());
+        },
+    })
+    const columns = reactive([
+      nameColumn,
+      {
+        title: "Age",
+        key: "age",
+        sorter(rowA, rowB) {
+          return rowA.age - rowB.age;
+        }
       },
-      add_line(){
-        data.value.push({
-          key: null,
-          name: null,
-          // age: null,
-          working_location: null,
-          is_pm:null,
-          email:null
-        })
+      addressColumn,
+      disableColumn
+    ]);
+    return {
+      data,
+      columns,
+      pagination: { pageSize: 5 },
+      filterName(val) {
+        console.log(val)
+        nameColumn.filterOptionValue = val;
       },
-    }
+      filterAddr(val) {
+        console.log(val)
+        addressColumn.filterOptionValue = val;
+      },
+      unfilterName() {
+        nameColumn.filterOptionValue = null;
+      },
+      handleUpdateFilter(filters, sourceColumn) {
+        addressColumn.filterOptionValue = filters[sourceColumn.key];
+      }
+    };
   }
-})
+});
 </script>
 <style lang="scss" scoped>
 .card-list {
