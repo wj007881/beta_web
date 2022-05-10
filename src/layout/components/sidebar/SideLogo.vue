@@ -1,8 +1,10 @@
 <template>
   <div class="logo">
-    <n-icon size="36" color="#316c72">
-      <LastfmSquare />
-    </n-icon>
+    <div >
+    <!-- <n-icon size="36" color="#316c72"> -->
+      <img src="@/assets/images/lenovo.jpg" style="max-width: 80px">
+    <!-- </n-icon> -->
+    </div>
     <router-link to="/">
       <n-gradient-text type="primary">{{ title }}</n-gradient-text>
     </router-link>
@@ -23,7 +25,7 @@ const title = import.meta.env.VITE_APP_TITLE
   a {
     margin-left: 5px;
     .n-gradient-text {
-      font-size: 14px;
+      font-size: 18px;
       font-weight: bold;
     }
   }
