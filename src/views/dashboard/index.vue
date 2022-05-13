@@ -11,12 +11,12 @@
           <n-statistic label="待办" :value="4">
             <template #suffix> / 10 </template>
           </n-statistic>
-          <n-statistic ml80 label="Stars">
+          <!-- <n-statistic ml80 label="得分">
             <n-number-animation ref="starsNumberRef" show-separator :from="0" :to="999" />
-          </n-statistic>
-          <n-statistic ml80 label="Forks">
+          </n-statistic> -->
+          <!-- <n-statistic ml80 label="Forks">
             <n-number-animation ref="starsNumberRef" show-separator :from="0" :to="299" />
-          </n-statistic>
+          </n-statistic> -->
         </div>
       </div>
     </n-card>
@@ -27,15 +27,53 @@
           <n-button text type="primary" @click="router.push('/project/project_list')">更多</n-button>
         </template>
         <div class="card-list">
-          <n-card v-for="i in 10" :key="i" title="Vue Naive Admin" size="small">
+          <!-- <div v-for="i in dataRef"> -->
+          <!-- <n-card  :key="i" :title=i.title size="small">
             <template #cover>
               <img
-                src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+                :src=i.img
                 style="max-width: 300px; max-height: 150px"
               />
             </template>
-            <p op60>一个基于 Vue3.0、Vite、Naive UI 的轻量级后台管理模板</p>
+            <p op60>{{i.content}}</p>
+          </n-card> -->
+          <n-card  :key="i" title="Lenovo Go Mouse" size="small">
+            <template #cover>
+              <img
+                src="@/assets/images/go_mouse.jpeg"
+                style="max-width: 300px; max-height: 150px"
+              />
+            </template>
+            <p op60>Lenovo Go Mouse</p>
           </n-card>
+          <n-card  :key="i" title="Lenovo Go Speak" size="small">
+            <template #cover>
+              <img
+                src="@/assets/images/go_speak.jpeg"
+                style="max-width: 300px; max-height: 150px"
+              />
+            </template>
+            <p op60>Lenovo Go Speak</p>
+          </n-card>
+          <n-card  :key="i" title="Lenovo Go Keyboard" size="small">
+            <template #cover>
+              <img
+                src="@/assets/images/go_keyboard.jpeg"
+                style="max-width: 300px; max-height: 150px"
+              />
+            </template>
+            <p op60>Lenovo Go Keyboard</p>
+          </n-card>
+          <n-card  :key="i" title="Lenovo Go Package" size="small">
+            <template #cover>
+              <img
+                src="@/assets/images/go_package.jpeg"
+                style="max-width: 300px; max-height: 150px"
+              />
+            </template>
+            <p op60>Lenovo Go Package</p>
+          </n-card>
+          <!-- </div> -->
           <div class="blank"></div>
           <div class="blank"></div>
           <div class="blank"></div>
@@ -47,10 +85,34 @@
 </template>
 
 <script setup>
+import { defineComponent,ref } from "vue";
 import { useUserStore } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const userStore = useUserStore()
+
+let dataRef=[
+  {
+    title: "Lenovo Go Mouse",
+    content: "Lenovo Go Mouse",
+    img: "http://192.168.50.46/images/go_mouse.png"
+  },
+  {
+    title: "Lenovo Go Speak",
+    content: "Lenovo Go Speak",
+    img: "http://192.168.50.46/images/go_speak.png"
+  },
+  {
+    title: "Lenovo Go Keyboard",
+    content: "Lenovo Go Keyboard",
+    img: "http://192.168.50.46/images/go_keyboard.png"
+  },
+  {
+    title: "Lenovo Go Package",
+    content: "Lenovo Go Package",
+    img: "http://192.168.50.46/images/go_package.png"
+  },
+]
 </script>
 
 <style lang="scss" scoped>
