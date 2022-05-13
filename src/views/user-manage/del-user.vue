@@ -76,25 +76,28 @@ const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 //     state:false
 //   }
 // ];
-let data=ref([])
+let dataRef=ref([])
 
 export default defineComponent({
   setup() {
     const checkedRowKeysRef = ref([])
-    const Nsloading = reactive({ title: false })
-    const handleSwitchChange=(val,state)=>{
-      Nsloading.title=true
+    const Nsloading = reactive({ loading: false })
+    const handleSwitchChange=(row,index)=>{
+      Nsloading.loading=true
+      // console.log(row['state'])
+      
+      // dataRef.value[index].state=false
+      
+
       setTimeout(()=>{
-        console.log(data[val].state)
-        if(data[val].state==false){
-          data[val].state=true
+        if(dataRef.value[index].state=='False'){
+            dataRef.value[index].state='True'
+
         }
-        else if(data[val].state==true){
-          data[val].state=false
-          data=data
-        }
-        console.log(data[val].state)
-        Nsloading.title=false
+        else if(dataRef.value[index].state=='True'){
+            dataRef.value[index].state='False'
+      }
+        Nsloading.loading=false
         
       },1000)
     }
@@ -103,12 +106,12 @@ export default defineComponent({
       let addr=[]
       let addr2=[]
       console.log('options')
-      for(let i=0;i<data.length;i++){
-        if(addr.indexOf(data[i].address)){
-          addr.push(data[i].address)
+      for(let i=0;i<dataRef.length;i++){
+        if(addr.indexOf(dataRef[i].address)){
+          addr.push(dataRef[i].address)
           addr2.push({
-            label:data[i].address,
-            value:data[i].address
+            label:dataRef[i].address,
+            value:dataRef[i].address
           })
         }
       }
@@ -116,13 +119,13 @@ export default defineComponent({
       return addr2
     }
     const switchRef=(row)=>{
-      if(row.state=='able'){
+      if(row.state=='True'){
 
-        return false
+        return true
       }
       else{
 
-        return true
+        return false
       }
     }
     const nameColumn = reactive({
@@ -184,11 +187,11 @@ export default defineComponent({
               NSwitch, 
               {
                 round:false,
-                loading:Nsloading.title,
-                disabled:Nsloading.title,
-                value:row.state,
+                loading:Nsloading.loading,
+                disabled:Nsloading.loading,
+                value:switchRef(row),
                 onUpdateValue: () => {
-                  handleSwitchChange(index)
+                  handleSwitchChange(row,index)
                   }
               })
         },
@@ -254,11 +257,11 @@ export default defineComponent({
         .then((res)=>{
           // console.log(res.data)
           if(res.data.code!=200){
-            data=''
+            dataRef=''
 
           }
           else{
-            data.value=res.data.user_list
+            dataRef.value=res.data.user_list
             // for(let i=0;i<res.data.user_list.length;i++){
               
             // }
@@ -270,7 +273,7 @@ export default defineComponent({
         })
       })
     return {
-      data,
+      data:dataRef,
       columns,
       Nsloading:Nsloading,
       checkedRowKeys: checkedRowKeysRef,

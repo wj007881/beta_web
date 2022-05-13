@@ -11,9 +11,9 @@
           <n-statistic label="待办" :value="4">
             <template #suffix> / 10 </template>
           </n-statistic>
-          <!-- <n-statistic ml80 label="得分">
+          <n-statistic ml80 label="Score">
             <n-number-animation ref="starsNumberRef" show-separator :from="0" :to="999" />
-          </n-statistic> -->
+          </n-statistic>
           <!-- <n-statistic ml80 label="Forks">
             <n-number-animation ref="starsNumberRef" show-separator :from="0" :to="299" />
           </n-statistic> -->
@@ -46,23 +46,23 @@
             </template>
             <p op60>Lenovo Go Mouse</p>
           </n-card>
-          <n-card  :key="i" title="Lenovo Go Speak" size="small">
+          <n-card  :key="i" title="Lenovo Go Speaker" size="small">
             <template #cover>
               <img
                 src="@/assets/images/go_speak.jpeg"
                 style="max-width: 300px; max-height: 150px"
               />
             </template>
-            <p op60>Lenovo Go Speak</p>
+            <p op60>Lenovo Go Speaker</p>
           </n-card>
-          <n-card  :key="i" title="Lenovo Go Keyboard" size="small">
+          <n-card  :key="i" title="Lenovo Go Ergonomic Keyboard & Mouse" size="small">
             <template #cover>
               <img
                 src="@/assets/images/go_keyboard.jpeg"
                 style="max-width: 300px; max-height: 150px"
               />
             </template>
-            <p op60>Lenovo Go Keyboard</p>
+            <p op60>Lenovo Go Ergonomic Keyboard & Mouse</p>
           </n-card>
           <n-card  :key="i" title="Lenovo Go Package" size="small">
             <template #cover>
