@@ -3,13 +3,16 @@
     <n-card>
    <n-space vertical >
     <n-space justify="end">
-      <n-grid :cols="5" responsive>
+      <n-grid :cols="7" responsive>
         <n-grid-item :offset="0">
           <n-input round clearable :on-input="filterName" :on-clear="unfilterName" placeholder="搜索名字">
           </n-input>
         </n-grid-item>
         <n-grid-item :offset="3">
-         <n-button class="disbutton" onclick="dis_account()">批量禁用</n-button>
+         <n-button class="disbutton" @click="dis_account('False')">批量禁用</n-button>
+        </n-grid-item>
+        <n-grid-item :offset="1">
+         <n-button class="disbutton" @click="dis_account('True')">批量启用</n-button>
         </n-grid-item>
       </n-grid>
     </n-space>
@@ -25,13 +28,6 @@
     />
   </n-space>
   </n-card>
-  <!-- <n-button
-            round
-            type="primary"
-            @click="axios_tes()"
-          >
-            axios_tes
-          </n-button> -->
   </div>
 </template>
 
@@ -41,6 +37,7 @@ import { NSwitch,NTag } from "naive-ui";
 import {defAxios} from '@/utils/http/index';
 import axios from "axios";
 import { getToken } from "@/utils/token";
+import { stringify } from "json5";
 const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 // let data = [
 //   {
@@ -82,22 +79,52 @@ export default defineComponent({
   setup() {
     const checkedRowKeysRef = ref([])
     const Nsloading = reactive({ loading: false })
+    const change_state=async(id,state)=>{
+      let user_state={
+        'state':state,
+        'id':id
+      }
+      const as= defAxios({
+        url: baseURL+'/change_user_state',
+            method: 'post',
+            headers: {
+              "Content-type": "application/json"
+            },
+            data:{
+              "id":user_state.id,
+              "state":user_state.state
+            }
+        })
+        await as.then((res)=>{
+              if(res.status_code==200){
+                user_state.state='True'
+              }
+            })
+        await as.catch(()=>{
+              user_state.state='False'
+            })
+        
+        return user_state
+
+        
+    }
     const handleSwitchChange=(row,index)=>{
       Nsloading.loading=true
-      // console.log(row['state'])
-      
-      // dataRef.value[index].state=false
-      
-
-      setTimeout(()=>{
+      setTimeout(async()=>{
+        // console.log(dataRef.value[index].state)
         if(dataRef.value[index].state=='False'){
-            dataRef.value[index].state='True'
+          const req=await change_state(row.id,"True")
 
+          dataRef.value[index].state=req.state
+          Nsloading.loading=false
         }
         else if(dataRef.value[index].state=='True'){
-            dataRef.value[index].state='False'
+          const req=await change_state(row.id,"False")
+          // console.log(req)
+          dataRef.value[index].state=req.state
+          Nsloading.loading=false
       }
-        Nsloading.loading=false
+        
         
       },1000)
     }
@@ -245,38 +272,61 @@ export default defineComponent({
       // disableColumn,
       disableButton
     ]);
+    const dis_account= async(state)=>{
+        console.log('start')
+        let success_arr=[]
+        let error_arr=[]
+        for(let i=0;i<checkedRowKeysRef.value.length;i++){
+            console.log(checkedRowKeysRef)
+            const id=checkedRowKeysRef.value[i]
+            console.log(id)
+            const req=await change_state(id,state)
+            if(req.state==state){
+              success_arr.push(req)
+              dataRef.value[i].state=state
+            }
+            else{
+              error_arr.push(req)
+            }
+        }
+        if(error_arr==[]){
+          get_data()
+        }
+        else{
+          
+        }
+      }
+    const get_data=async ()=>{
+      try {
+        const res = await defAxios({
+            url: baseURL + '/get_create_user',
+            method: 'post',
+            headers: {
+            "Content-type": "application/json"
+            }
+        });
+        if (res.data.code != 200) {
+          dataRef = '';
+        }
+        else {
+          dataRef.value = res.data.user_list;
+          console.log(res.data.user_list);
+        }
+        } 
+        catch (err) {
+          throw (err);
+        }
+    }
     onMounted(async()=>{
-       await defAxios({
-          url: baseURL+'/get_create_user',
-          method: 'post',
-          headers: {
-            "Content-type": "application/json",
-            // "Authorization":"JWT "+getToken()
-          }
-        })
-        .then((res)=>{
-          // console.log(res.data)
-          if(res.data.code!=200){
-            dataRef=''
-
-          }
-          else{
-            dataRef.value=res.data.user_list
-            // for(let i=0;i<res.data.user_list.length;i++){
-              
-            // }
-            console.log(res.data.user_list)
-          }
-        })
-        .catch((err)=>{
-          throw (err) 
-        })
-      })
+       await get_data()
+      });
     return {
       data:dataRef,
       columns,
       Nsloading:Nsloading,
       checkedRowKeys: checkedRowKeysRef,
+      change_state:change_state,
+      dis_account:dis_account,
       pagination: { pageSize: 10 },
       filterName(val) {
         console.log(val)
@@ -294,27 +344,9 @@ export default defineComponent({
       },
       handleCheck (rowKeys) {
         checkedRowKeysRef.value = rowKeys
-        console.log(checkedRowKeysRef.value)
+        // console.log(checkedRowKeysRef.value)
       },
-      dis_account(){
-        for(let i=0;i<checkedRowKeysRef.value.length;i++){
-            defAxios({
-            url: baseURL+'/disable_user',
-            method: 'post',
-            data:{'id':checkedRowKeysRef.value[i]},
-            headers: {
-              "Content-type": "application/json",
-            }
-            })
-            .then((res)=>{
-              console.log(res)
-            })
-            .catch((err)=>{
-              throw err
-            })
-        }
-        
-      }
+      
       
     };
   }

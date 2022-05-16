@@ -1,8 +1,6 @@
 <template>
   <div>
     <n-loading-bar-provider>
-
-
     <n-card>
    <n-data-table :columns="columns" :data="data"  />
 

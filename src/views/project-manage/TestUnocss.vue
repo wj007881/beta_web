@@ -1,15 +1,31 @@
 <template>
-  <div p24>
-    <div p20 bg="#fff">
-      <p text-12>测试12px</p>
-      <p text-13>测试13px</p>
-      <p text-14>测试14px</p>
-      <p text-15>测试15px</p>
-      <p text-16>测试16px</p>
-      <p text-17>测试17px</p>
-      <p text-18>测试18px</p>
-      <p text-19>测试19px</p>
-      <p text-20>测试20px</p>
-    </div>
-  </div>
+  <n-transfer ref="transfer" v-model:value="value" :options="options" filterable/>
 </template>
+
+<script>
+import { defineComponent, ref } from "vue";
+
+function createOptions() {
+  return Array.from({ length: 100 }).map((v, i) => ({
+    label: "Option " + i,
+    value: i,
+    disabled: i % 5 === 0
+  }));
+}
+
+function createValues() {
+  return Array.from({ length: 50 }).map((v, i) => i);
+}
+
+export default defineComponent({
+  setup() {
+    return {
+      options: createOptions(),
+      value: ref(createValues()),
+      value_update(){
+        console.log('Update')
+      }
+    };
+  }
+});
+</script>
