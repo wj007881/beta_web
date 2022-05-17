@@ -44,16 +44,16 @@
         multiple
       />
     </n-form-item>
-    <n-form-item label="测试时间" path="datetimeValue" >
-      <n-date-picker v-model:value="model.datetimeValue" type="date" placeholder="请选择开始测试时间"/>
+    <n-form-item label="测试时间" path="startDatetimeValue" >
+      <n-date-picker v-model:value="model.startDatetimeValue" type="date" placeholder="请选择开始测试时间"/>
       <a style="font-size:30px;width: 30px;text-align: center;">-</a>
-      <n-date-picker v-model:value="model.datetimeValue" type="date" placeholder="请选择结束测试时间"/>
+      <n-date-picker v-model:value="model.endDatetimeValue" type="date" placeholder="请选择结束测试时间"/>
     </n-form-item>
     
     <n-form-item label="测试人员选择" path="transferValue" >
       <n-transfer
         v-model:value="model.transferValue"
-        :options="dataSelections"
+        :options="dataSelection()"
         source-title="可选人员"
         target-title="已选人员"
         filterable
@@ -63,7 +63,7 @@
 
     <div style="display: flex; justify-content: flex-end">
       <n-button round type="primary" @click="handleValidateButtonClick">
-        验证
+        提交
       </n-button>
     </div>
   </n-form>
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { defineComponent, ref,onMounted } from "vue";
+import { defineComponent, ref,onMounted,onBeforeMount } from "vue";
 import { useMessage,zhCN, dateZhCN} from "naive-ui";
 import {defAxios} from '@/utils/http/index';
 const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
@@ -96,17 +96,25 @@ export default defineComponent({
           dataRef = '';
         }
         else {
-          dataRef.value = res.data.user_list;
+          let data= res.data.user_list;
           // console.log(res.data.user_list);
+          // return dataRef.value
+          dataRef.value=data.map((v)=>({
+              label:v.name,
+              value:v.id
+              }))
+
         }
         } 
         catch (err) {
           throw (err);
         }
     }
+    // const dataR=await get_data()
     onMounted(async()=>{
        await get_data()
       });
+
     return {
       zhCN,
       dateZhCN,
@@ -119,7 +127,8 @@ export default defineComponent({
         textareaValue: null,
         selectValue: null,
         multipleSelectValue: null,
-        datetimeValue: null,
+        startDatetimeValue: null,
+        endDatetimeValue:null,
         nestedValue: {
           path1: null,
           path2: null
@@ -133,11 +142,8 @@ export default defineComponent({
         sliderValue: 0,
         transferValue: null
       }),
-      dataSelections:dataRef.value.map((v)=>({
-        label:v.name,
-        value:v.id
-      })),
-      generalOptions: ["groode", "veli good", "emazing", "lidiculous","groode", "veli good", "emazing", "lidiculous"].map((v) => ({
+      // dataSelection:dataRef.value,
+      generalOptions: ["groode", "veli good", "emazing", "lidiculous"].map((v) => ({
         label: v,
         value: v
       })),
@@ -157,98 +163,49 @@ export default defineComponent({
         inputValue: {
           required: true,
           trigger: ["blur", "input"],
-          message: "请输入 inputValue"
+          message: "请输入项目名称"
         },
         textareaValue: {
           required: true,
           trigger: ["blur", "input"],
-          message: "请输入 textareaValue"
+          message: "请输入项目简介"
         },
         selectValue: {
           required: true,
           trigger: ["blur", "change"],
-          message: "请选择 selectValue"
+          message: "请选择项目类别"
         },
         multipleSelectValue: {
           type: "array",
           required: true,
           trigger: ["blur", "change"],
-          message: "请选择 multipleSelectValue"
+          message: "请选择测试模块"
         },
-        datetimeValue: {
+        startDatetimeValue: {
           type: "number",
           required: true,
           trigger: ["blur", "change"],
-          message: "请输入 datetimeValue"
+          message: "请输入开始时间"
         },
-        nestedValue: {
-          path1: {
-            required: true,
-            trigger: ["blur", "input"],
-            message: "请输入 nestedValue.path1"
-          },
-          path2: {
-            required: true,
-            trigger: ["blur", "change"],
-            message: "请输入 nestedValue.path2"
-          }
-        },
-        checkboxGroupValue: {
-          type: "array",
-          required: true,
-          trigger: "change",
-          message: "请选择 checkboxGroupValue"
-        },
-        radioGroupValue: {
-          required: true,
-          trigger: "change",
-          message: "请选择 radioGroupValue"
-        },
-        radioButtonGroupValue: {
-          required: true,
-          trigger: "change",
-          message: "请选择 radioButtonGroupValue"
-        },
-        inputNumberValue: {
+        endDatetimeValue: {
           type: "number",
           required: true,
           trigger: ["blur", "change"],
-          message: "请输入 inputNumberValue"
-        },
-        timePickerValue: {
-          type: "number",
-          required: true,
-          trigger: ["blur", "change"],
-          message: "请输入 timePickerValue"
-        },
-        sliderValue: {
-          validator(rule, value) {
-            return value > 50;
-          },
-          trigger: ["blur", "change"],
-          message: "sliderValue 需要大于 50"
+          message: "请输入结束时间"
         },
         transferValue: {
           type: "array",
           required: true,
           trigger: "change",
-          message: "请输入 transferValue"
+          message: "请选择测试人员"
         }
       },
       handleValidateButtonClick(e) {
         e.preventDefault();
-        // formRef.value?.validate((errors) => {
-        //   if (!errors) {
-        //     message.success("验证成功");
-        //   } else {
-        //     console.log(errors);
-        //     message.error("验证失败");
-        //   }
-        // });
-        console.log(dataRef.value.map((v)=>({
-        label:v.name,
-        value:v.id
-      })))
+        console.log(dataRef.value[0])
+      },
+      dataSelection(){
+        return dataRef.value
       }
     };
   }
