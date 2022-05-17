@@ -1,5 +1,6 @@
 <template>
 <div>
+  <n-config-provider :locale="zhCN" :datelocale="dateZhCN">
   <n-loading-bar-provider>
   <n-card>
  <n-form
@@ -52,10 +53,11 @@
     <n-form-item label="测试人员选择" path="transferValue" >
       <n-transfer
         v-model:value="model.transferValue"
-        :options="generalOptions"
+        :options="dataSelections"
         source-title="可选人员"
         target-title="已选人员"
         filterable
+
       />
     </n-form-item>
 
@@ -67,17 +69,49 @@
   </n-form>
 </n-card>
 </n-loading-bar-provider>
+</n-config-provider>
 </div>
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
-import { useMessage } from "naive-ui";
+import { defineComponent, ref,onMounted } from "vue";
+import { useMessage,zhCN, dateZhCN} from "naive-ui";
+import {defAxios} from '@/utils/http/index';
+const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
+let dataRef=ref([])
 export default defineComponent({
   setup() {
     const formRef = ref(null);
     const message = useMessage();
+    const get_data=async ()=>{
+      try {
+        const res = await defAxios({
+            url: baseURL + '/get_create_user',
+            method: 'post',
+            headers: {
+            "Content-type": "application/json"
+            }
+        });
+        if (res.data.code != 200) {
+          dataRef = '';
+        }
+        else {
+          dataRef.value = res.data.user_list;
+          // console.log(res.data.user_list);
+        }
+        } 
+        catch (err) {
+          throw (err);
+        }
+    }
+    onMounted(async()=>{
+       await get_data()
+      });
     return {
+      zhCN,
+      dateZhCN,
+      locale:ref(null),
+      datelocale:ref(null),
       formRef,
       size: ref("medium"),
       model: ref({
@@ -99,6 +133,10 @@ export default defineComponent({
         sliderValue: 0,
         transferValue: null
       }),
+      dataSelections:dataRef.value.map((v)=>({
+        label:v.name,
+        value:v.id
+      })),
       generalOptions: ["groode", "veli good", "emazing", "lidiculous","groode", "veli good", "emazing", "lidiculous"].map((v) => ({
         label: v,
         value: v
@@ -199,14 +237,18 @@ export default defineComponent({
       },
       handleValidateButtonClick(e) {
         e.preventDefault();
-        formRef.value?.validate((errors) => {
-          if (!errors) {
-            message.success("验证成功");
-          } else {
-            console.log(errors);
-            message.error("验证失败");
-          }
-        });
+        // formRef.value?.validate((errors) => {
+        //   if (!errors) {
+        //     message.success("验证成功");
+        //   } else {
+        //     console.log(errors);
+        //     message.error("验证失败");
+        //   }
+        // });
+        console.log(dataRef.value.map((v)=>({
+        label:v.name,
+        value:v.id
+      })))
       }
     };
   }

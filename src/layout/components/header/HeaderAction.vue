@@ -6,6 +6,7 @@
       </n-icon>
     </div>
       </n-dropdown>
+      <a>|</a>
   <n-dropdown :options="options" @select="handleSelect">
     <div class="avatar">
       <img :src="userStore.avatar" />
@@ -59,15 +60,11 @@ export default defineComponent({
       dateLocale: ref(null),
       langSelect(key) {
             if (key === 'chinese') {
-
-                        this.locale = zhCN
-                        this.dateLocale = dateZhCN
-
+                locale = zhCN
+                dateLocale = dateZhCN
             } else if (key === 'english') {
-
-                        this.locale = null
-                        this.dateLocale = null
-
+                locale = null
+                dateLocale = null
             }
         },
       handleSelect(key) {
@@ -99,6 +96,7 @@ export default defineComponent({
     width: 25px;
     height: 25px;
     border-radius: 50%;
+    margin-left: 10px;
     margin-right: 10px;
   }
 }
