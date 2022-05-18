@@ -15,6 +15,18 @@
       maxWidth: '640px'
     }"
   >
+    <n-form-item label="产品图片" path="image">
+          <n-button
+            
+            round
+            type="primary"
+            @click='upload_action()'
+          >
+            上传图片
+          </n-button>
+    </n-form-item>
+
+
     <n-form-item label="项目名称" path="inputValue">
       <n-input v-model:value="model.inputValue" placeholder="请输入项目名称"/>
     </n-form-item>
