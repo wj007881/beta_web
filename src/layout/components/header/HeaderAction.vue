@@ -49,6 +49,11 @@ export default defineComponent({
   setup() {
     const userStore = useUserStore()
     const router = useRouter()
+    const logout=()=>{
+        userStore.logout()
+        $message.success('已退出登录')
+        router.push({ path: '/login' })
+      }
     return {
       zhCN,
       dateZhCN,
@@ -73,11 +78,6 @@ export default defineComponent({
         } else if (key === 'switchRole') {
           switchRole()
         }
-      },
-      logout() {
-        userStore.logout()
-        $message.success('已退出登录')
-        router.push({ path: '/login' })
       }
     };
   }

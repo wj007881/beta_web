@@ -3,27 +3,31 @@
   <n-config-provider :locale="zhCN" :datelocale="dateZhCN">
   <n-loading-bar-provider>
   <n-card>
- <n-form
-    ref="formRef"
-    :model="model"
-    :rules="rules"
-    label-placement="left"
-    label-width="auto"
-    require-mark-placement="right-hanging"
-    :size="size"
-    :style="{
-      maxWidth: '640px'
-    }"
-  >
+  <n-form
+      ref="formRef"
+      :model="model"
+      :rules="rules"
+      label-placement="left"
+      label-width="auto"
+      require-mark-placement="right-hanging"
+      :size="size"
+      :style="{
+        maxWidth: '640px'
+      }"
+    >
     <n-form-item label="产品图片" path="image">
-          <n-button
-            
-            round
-            type="primary"
-            @click='upload_action()'
+          <n-upload
+            :action="upload_img"
+            :headers="{
+              'Authorization': tokens()
+            }"
+            :data="{
+              'naive-data': 'cool! naive!'
+            }"
           >
-            上传图片
-          </n-button>
+    <n-button>上传图片</n-button>
+  </n-upload>
+  
     </n-form-item>
 
 
@@ -72,7 +76,17 @@
 
       />
     </n-form-item>
-
+ <n-form-item label="附件" path="file_list">
+  <n-upload
+            :action="upload_file"
+            :headers="{
+              'Authorization': tokens()
+            }"
+            
+          >
+    <n-button>上传附件</n-button>
+  </n-upload>
+    </n-form-item>
     <div style="display: flex; justify-content: flex-end">
       <n-button round type="primary" @click="handleValidateButtonClick">
         提交
@@ -89,12 +103,17 @@
 import { defineComponent, ref,onMounted,onBeforeMount } from "vue";
 import { useMessage,zhCN, dateZhCN} from "naive-ui";
 import {defAxios} from '@/utils/http/index';
-const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
+import {getToken} from '@/utils/token'
+// const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 let dataRef=ref([])
 export default defineComponent({
   setup() {
     const formRef = ref(null);
     const message = useMessage();
+    const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
+    const upload_img=baseURL+'/post_project_img'
+    const upload_file=baseURL+'/post_project_file'
+    const token = 'JWT ' + getToken()
     const get_data=async ()=>{
       try {
         const res = await defAxios({
@@ -134,6 +153,9 @@ export default defineComponent({
       datelocale:ref(null),
       formRef,
       size: ref("medium"),
+      upload_img:upload_img,
+      upload_file:upload_file,
+      // token:token,
       model: ref({
         inputValue: null,
         textareaValue: null,
@@ -172,6 +194,11 @@ export default defineComponent({
         }
       ],
       rules: {
+        img: {
+          required: true,
+          trigger: ["blur", "input"],
+          message: "请选择图片"
+        },
         inputValue: {
           required: true,
           trigger: ["blur", "input"],
@@ -218,6 +245,9 @@ export default defineComponent({
       },
       dataSelection(){
         return dataRef.value
+      },
+      tokens(){
+        return token
       }
     };
   }
