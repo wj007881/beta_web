@@ -44,7 +44,7 @@
 
 <script >
 import { h, defineComponent, ref,computed } from 'vue'
-import { NInput,NSelect,NIcon,NButton,useMessage,useLoadingBar,useDialog } from 'naive-ui'
+import { NInput,NSelect,NIcon,NButton,useMessage,useLoadingBar,useDialog, NAutoComplete } from 'naive-ui'
 // import { defAxios as defaxios} from '@/utils//http'
 import { getToken,getUserID } from '@/utils/token'
 import axios from 'axios'
@@ -134,10 +134,11 @@ export default defineComponent({
           key: 'email',
           render (row, index) {
             return ('div',{},[
-              h(NInput, {
+              h(NAutoComplete, {
               value: row.email_front,
               style:'width:70%;float:left',
-              placeholder:"请输入邮箱,无需后缀",
+              placeholder:"请输入邮箱",
+              options:email_back_options,
               onBlur(v){
                 if (! data.value[index].email) {
                   message.error("第"+stringify(index+1)+"行邮箱不能为空");
@@ -147,16 +148,6 @@ export default defineComponent({
               },
               onUpdateValue (v) {
                 data.value[index].email = v
-              }
-            }),
-            h(NSelect,{
-              value: row.email_back,
-              style:'width:30%;max-width:30%;float:right',
-              placeholder:'',
-              defaultValue:'@lenovo.com',
-              options:email_back_options,
-              onUpdateValue (v) {
-                data.value[index].email_back = v
               }
             })
             ])

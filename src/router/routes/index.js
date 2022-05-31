@@ -44,7 +44,6 @@ export const basicRoutes = [
       title: '登录页',
     },
   },
-
   {
     name: '个人中心',
     path: '/',
@@ -100,6 +99,15 @@ export const basicRoutes = [
         component: () => import('@/views/project-manage/TestUnocss.vue'),
         meta: {
           title: '测试unocss',
+        },
+      },
+      {
+        name: 'detail',
+        path: 'project_detail',
+        component: () => import('@/views/project-manage/project_detail.vue'),
+        isHidden: true,
+        meta: {
+          title: '项目详情',
         },
       },
       {

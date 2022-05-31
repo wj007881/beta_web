@@ -53,12 +53,7 @@
       />
     </n-form-item>
     <n-form-item label="模块选择" path="multipleSelectValue">
-      <n-select
-        v-model:value="model.multipleSelectValue"
-        placeholder="请选择模块"
-        :options="generalOptions"
-        multiple
-      />
+      <n-dynamic-tags v-model:value="model.tags" />
     </n-form-item>
     <n-form-item label="测试时间" path="startDatetimeValue" >
       <n-date-picker v-model:value="model.startDatetimeValue" type="date" placeholder="请选择开始测试时间"/>
@@ -160,7 +155,7 @@ export default defineComponent({
         inputValue: null,
         textareaValue: null,
         selectValue: null,
-        multipleSelectValue: null,
+        tags: ref(["外观", "性能","舒适度"]),
         startDatetimeValue: null,
         endDatetimeValue:null,
         nestedValue: {

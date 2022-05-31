@@ -32,12 +32,11 @@
 </template>
 
 <script>
-import { defineComponent, h, reactive,ref,onMounted } from "vue";
+import { defineComponent, h, reactive,ref,onMounted,onBeforeMount } from "vue";
 import { NSwitch,NTag } from "naive-ui";
 import {defAxios} from '@/utils/http/index';
 import axios from "axios";
 import { getToken } from "@/utils/token";
-import { stringify } from "json5";
 const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 // let data = [
 //   {
@@ -76,7 +75,16 @@ const baseURL= import.meta.env.VITE_APP_GLOB_BATA_API
 let dataRef=ref([])
 
 export default defineComponent({
+  
   setup() {
+    let addr_options=ref([{
+      label:'深圳',
+      value:'深圳'
+    },
+    {
+      label:'shenzhen',
+      value:'shenzhen'
+    }])
     const checkedRowKeysRef = ref([])
     const Nsloading = reactive({ loading: false })
     const change_state=async(id,state)=>{
@@ -128,22 +136,45 @@ export default defineComponent({
         
       },1000)
     }
-    // const addr_options=reactive({
-    const options=()=>{
-      let addr=[]
-      let addr2=[]
-      console.log('options')
-      for(let i=0;i<dataRef.length;i++){
-        if(addr.indexOf(dataRef[i].address)){
-          addr.push(dataRef[i].address)
-          addr2.push({
-            label:dataRef[i].address,
-            value:dataRef[i].address
-          })
+
+    const options=async()=>{
+        let addr=[]
+        let addr2=[]
+        for(let i=0;i<dataRef.value.length;i++){
+          
+          if(addr.indexOf(dataRef.value[i].address)==-1){
+            addr.push(dataRef.value[i].address)
+            addr2.push({
+              label:dataRef.value[i].address,
+              value:dataRef.value[i].address
+            })
+          }
+          }
+        // addr_options=addr2
+        return addr2
+      
+    }
+    const get_data=async ()=>{
+      try {
+        const res = await defAxios({
+            url: baseURL + '/get_create_user',
+            method: 'post',
+            headers: {
+            "Content-type": "application/json"
+            }
+        });
+        if (res.data.code != 200) {
+          dataRef = '';
         }
-      }
-      console.log(addr2)
-      return addr2
+        else {
+          dataRef.value = res.data.user_list;
+          // console.log(res.data.user_list);
+         
+        }
+        } 
+        catch (err) {
+          throw (err);
+        }
     }
     const switchRef=(row)=>{
       if(row.state=='True'){
@@ -173,37 +204,40 @@ export default defineComponent({
       title: "Address",
       key: "address",
       filterMultiple: false,
-      filterOptionValue: null,
-      filterOptions:options(),
+      // filterOptionValue: ['深圳','北京'],
+      filterOptions:addr_options,
       fixed: 'left',
       sorter: "default",
       width: 50,
       filter(value, row) {
         return !!~row.address.indexOf(value.toString());
-      }
+      },
+      // onUpdateValue:()=>{
+      //   addr_options=await options()
+      // }
     });
-    const disableColumn=reactive({
-        title: "State",
-        key: "state",
-        filterMultiple: false,
-        filterOptionValue: null,
-        sorter: "default",
-        fixed: 'right',
-        width: 50,
-        filterOptions: [
-        {
-          label: "disable",
-          value: "disable"
-        },
-        {
-          label: "able",
-          value: "able"
-        }
-        ],
-        filter(value, row) {
-          return !!~row.address.indexOf(value.toString());
-        },
-    });
+    // const disableColumn=reactive({
+    //     title: "State",
+    //     key: "state",
+    //     filterMultiple: false,
+    //     filterOptionValue: null,
+    //     sorter: "default",
+    //     fixed: 'right',
+    //     width: 50,
+    //     filterOptions: [
+    //     {
+    //       label: "disable",
+    //       value: "disable"
+    //     },
+    //     {
+    //       label: "able",
+    //       value: "able"
+    //     }
+    //     ],
+    //     filter(value, row) {
+    //       return !!~row.address.indexOf(value.toString());
+    //     },
+    // });
     const disableButton=reactive({
         title: "Action",
         key: "state",
@@ -290,35 +324,16 @@ export default defineComponent({
             }
         }
         if(error_arr==[]){
-          get_data()
+         await get_data()
         }
         else{
           
         }
       }
-    const get_data=async ()=>{
-      try {
-        const res = await defAxios({
-            url: baseURL + '/get_create_user',
-            method: 'post',
-            headers: {
-            "Content-type": "application/json"
-            }
-        });
-        if (res.data.code != 200) {
-          dataRef = '';
-        }
-        else {
-          dataRef.value = res.data.user_list;
-          console.log(res.data.user_list);
-        }
-        } 
-        catch (err) {
-          throw (err);
-        }
-    }
-    onMounted(async()=>{
+    
+    onBeforeMount(async()=>{
        await get_data()
+       await options()
       });
     return {
       data:dataRef,
@@ -346,8 +361,6 @@ export default defineComponent({
         checkedRowKeysRef.value = rowKeys
         // console.log(checkedRowKeysRef.value)
       },
-      
-      
     };
   }
   
