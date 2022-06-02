@@ -15,7 +15,7 @@
 "></div>
   <div id="echarts168" style="width: 150%;height: 250px;" v-if="isShowEcharts"></div>
 </div>
-<div style="width: 90%;display:flex;background-color: white; margin:0 auto;margin-top:30px;bottom: 10px;">
+<div style="min-height:50px;width: 90%;display:flex;background-color: white; margin:0 auto;margin-top:30px;bottom: 10px;padding: 15px;">
   <n-collapse>
     <n-collapse-item title="评级说明"  >
       <div class = "FormDesc">
@@ -76,7 +76,7 @@
     >
     <n-form-item label="Bug 搜索" path="inputValue" >
         <n-space justify="start" style="min-width: 400px;">
-            <n-input size='large' v-model:value="model.inputValue" placeholder="请输入标题关键字" />
+            <n-input size='large' v-model:value="model.inputValue" :on-input="filterTitle" placeholder="请输入标题关键字" />
             <n-button @click="cleanSearch" style="margin-top: 4px;">清除筛选
                 <n-icon size="23" color="#de576d">
                     <CloseCircle />
@@ -225,11 +225,11 @@
   <n-data-table :columns="columns" :data="data" :pagination="pagination" :row-props="rowProps"/>
 
 </div> -->
-<div style="width: 90%;display:flex;background-color: white; margin:0 auto;margin-top:30px;bottom: 10px;">
+<div style="width: 90%;display:flex;background-color: white; margin:0 auto;margin-top:30px;bottom: 10px;padding: 15px;">
   <n-data-table :columns="columns" :data="data" :pagination="pagination" :row-props="rowProps" ellipsis='true' :row-keys='rowKey' />
 
 </div>
- <n-back-top :right="40" :bottom="120">
+ <n-back-top :right="40" :bottom="150">
     <div
       style="
         width: 100px;
@@ -242,7 +242,7 @@
       <a>回到顶部</a>
     </div>
   </n-back-top>
-  <n-back-top :right="40" :bottom="60" show="true">
+  <n-back-top :right="40" :bottom="90" show="true">
     <div
       style="
         width: 100px;
@@ -256,6 +256,23 @@
       <a >提交问题</a>
     </div>
   </n-back-top>
+  <n-back-top :right="40" :bottom="30" show="true" :visibility-height="0">
+    <div
+      style="
+        width: 100px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        font-size: 14px;
+      "
+      @click="showModal = true"
+    >
+      <a >导出报告</a>
+    </div>
+  </n-back-top>
+  <n-button style="padding: 23px;position: fixed;bottom: 89px;right: 40px;z-index: 9999;background-color:white" round :size="large" @click="showModal = true">
+    提交问题
+  </n-button>
 </div>
 </template>
 <script>
@@ -265,7 +282,7 @@ import {CloseCircle} from '@vicons/ionicons5'
 import * as echarts from 'echarts'
 import {getToken} from '@/utils/token'
 import { stringify } from "json5";
-
+import modal from './formModal.vue'
 const props = {
                     ewidth: {
                         type: Number ,
@@ -280,7 +297,8 @@ let  setting_ID=ref(1)
 export default defineComponent({
         props,
         components: {
-            CloseCircle
+            CloseCircle,
+            modal
         },
         setup (props,context) {
             const message = useMessage();
@@ -329,39 +347,27 @@ export default defineComponent({
                             }
                             }],
                         type: 'bar',
-                        itemStyle: {
-                        normal: {
+                        // itemStyle: {
+                        // normal: {
                         label: {
                             show: true, //开启显示
-
-                            textStyle: {
-                            //数值样式
+                            // textStyle: {
+                            // //数值样式
                             color: 'black',
                             fontSize: 15
-                            }
+                            // }
                         },
-                        data:dataRef,
-                        color: function (d) {
-                            return (
-                            '#' +
-                            Math.floor(Math.random() * (256 * 256 * 256 - 1)).toString(16)
-                            );
-                        },
-                        RRef:function(){
-                            console.log(dataRef)
-                            return dataRef
-                        }
-                        }
-                        }
+                        
+                        // }
+                        // }
                         }
                     ]
                 };
-               
                 const myChart = echarts.init(document.getElementById('echarts168'));
                 myChart.setOption(option)
-            
                 window.onresize = () => {
                     myChart.resize()
+                    
                 };
 
             }
@@ -432,6 +438,26 @@ export default defineComponent({
                     
                     }
                 ]
+            const titleColumns = reactive({
+                title: "Title",
+                key: "Title",
+                filterOptionValue:'',
+                render(row,index){
+                    return h(NEllipsis,{
+                        style:"max-width:700px;min-width:300px",
+                        default:row.Title,
+                        value:row.title
+                    },
+                    { 
+
+                        default: () => row.Title
+                        })
+                },
+                filter(value, row) {
+                    // console.log(value)
+                    return !!~row.Title.indexOf(value.toString());
+                }
+                })
             const tagsColumns= reactive(
                 {
                 title: "Tags",
@@ -518,25 +544,15 @@ export default defineComponent({
                 {
                 type: "expand",
                 expandable: (rowData) => rowData.title !== "Jim Green",
-                renderExpand: (rowData) => {
-                    return `${rowData.name} is a good guy.`;
-                }
-                },
-                {
-                title: "Title",
-                key: "Title",
-                render(row,index){
-                    return h(NEllipsis,{
-                        style:"max-width:700px;min-width:300px",
-                        default:row.Title,
-                        value:row.title
-                    },
-                    { 
+                renderExpand: (row) => {
 
-                        default: () => row.Title
-                        })
+                    return h(modal,{
+                        rowData:row,
+                        aFrom:false
+                    });
                 }
                 },
+                titleColumns,
                 tagsColumns,
                 bugsLevelColumns,
                 {
@@ -715,6 +731,10 @@ export default defineComponent({
                     sliderValue: 0,
                     transferValue: null
                 }),
+                exportReport(){
+                    // e.preventDefault();
+                    showModalRef.value= true
+                },
                 sel_p(type){
                     console.log(type)
                 },
@@ -757,9 +777,15 @@ export default defineComponent({
                     // console.log(tagsColumns.filterOptionValue)
                     //  tagsColumns.filterOptionValue=value
                 },
+                filterTitle(val) {
+                    console.log(val)
+                    titleColumns.filterOptionValue = val;
+                },
                 cleanSearch(){
+                    model.inputValue=''
                     bugsLevelColumns.filterOptionValue=[];
                     tagsColumns.filterOptionValue=[];
+                    titleColumns.filterOptionValue=''
                 },
                 onNegativeClick() {
                     message.success("Cancel");
@@ -798,6 +824,9 @@ export default defineComponent({
     font-size: 16px;
     line-height: 44px;
     margin-top: 7px;
+}
+.DeasText{
+    padding-bottom: 20px;
 }
 .N1:before{
   background-color:#eb5a3c;

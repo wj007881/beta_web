@@ -137,14 +137,14 @@ export const basicRoutes = [
       },
     ],
   },
-
   {
     name: 'ERROR-PAGE',
     path: '/error-page',
     component: Layout,
     redirect: '/error-page/404',
+    isHidden:true,
     meta: {
-      title: '数据统计',
+      title: '404错误',
       icon: Calculator,
     },
     children: [
@@ -159,7 +159,27 @@ export const basicRoutes = [
       },
     ],
   },
-
+  {
+    name: 'userScore',
+    path: '/user-score',
+    component: Layout,
+    redirect: '/user-score/userScore',
+    meta: {
+      title: '数据统计',
+      icon: Calculator,
+    },
+    children: [
+      {
+        name: 'userScore',
+        path: 'userScore',
+        component: () => import('@/views/user-score/index.vue'),
+        meta: {
+          title: '用户积分排名',
+          icon: OrderedListOutlined,
+        },
+      },
+    ],
+  },
 ]
 
 export const NOT_FOUND_ROUTE = {
