@@ -4,4 +4,4 @@ git add .
  
 git commit -m "mod:daily save %date:~0,10%"
  
-cmd /c git push -u origin master
+cmd /c git push -f -u origin master
